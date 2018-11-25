@@ -11,14 +11,21 @@ namespace TestApp
 
         static void TestTokenize()
         {
-            List<Tuple<int, int>> tuples = Nltk.Tokenize.Util.RegexpSpanTokenize(text, "\\s");
-            
-            return;
-
+            //List<Tuple<int, int>> tuples = Nltk.Tokenize.Util.RegexpSpanTokenize(text, "\\s");
             var list = Nltk.Tokenize.SentTokenize(text);
             if (list != null)
                 foreach (var item in list)
                     Console.Write(item + "\r\n");
+        }
+
+        static void TestProbability()
+        {
+            var words = Nltk.Tokenize.WordTokenize(text);
+            var fd = Nltk.Probability.FreqDist.Create(words);
+
+            var result = fd.MostCommon(null);
+            foreach (var item in result)
+                Console.WriteLine(item.Key + ": " + item.Value);
         }
 
         static void Main(string[] args)
@@ -29,7 +36,8 @@ namespace TestApp
                 @"C:\IronPython27\Lib\site-packages",
             });
 
-            TestTokenize();
+            //TestTokenize();
+            TestProbability();
         }
     }
 }

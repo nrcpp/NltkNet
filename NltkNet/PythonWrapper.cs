@@ -13,7 +13,7 @@ namespace NltkNet
         private ScriptScope _scope;
         private ScriptSource _source;
         private CompiledCode _compiled;
-        private object _pythonClass;
+        private dynamic _pythonClass;
         private dynamic _defaultModule;
 
         public PythonWrapper()
@@ -64,9 +64,14 @@ namespace NltkNet
             _scope.SetVariable(variable, value);
         }
 
-        public void SetDefaultClass(string className)
+        public dynamic CreateObject(string className, params dynamic[] parameters)
         {
-            _pythonClass = _engine.Operations.Invoke(_scope.GetVariable(className));
+            return _engine.Operations.Invoke(_scope.GetVariable(className), parameters);
+        }
+
+        public void SetDefaultClass(string className, params dynamic[] arguments)
+        {
+            _pythonClass = CreateObject(className, arguments);
         }
 
         public void SetDefaultModule(string moduleName)
@@ -89,17 +94,22 @@ namespace NltkNet
             return _scope.GetVariable<T>(funcName);
         }
 
-        public void CallMethod(string method, params dynamic[] arguments)
+        public void CallMethod(dynamic pyObject, string method, params dynamic[] parameters)
         {
-            _engine.Operations.InvokeMember(_pythonClass, method, arguments);
+            _engine.Operations.InvokeMember(pyObject, method, parameters);
         }
 
-        public dynamic CallFunction(string funcName, params dynamic[] arguments)
+        public void CallMethod(string method, params dynamic[] parameters)
+        {
+            _engine.Operations.InvokeMember(_pythonClass, method, parameters);
+        }
+
+        public dynamic CallFunction(string funcName, params dynamic[] parameters)
         {
             var func = GetVariable(funcName);
-            return _engine.Operations.Invoke(func, arguments);
+            return _engine.Operations.Invoke(func, parameters);
         }
-
+        
         public dynamic CallModuleFunction(string moduleName, string funcName, params dynamic[] arguments)
         {
             var module = GetVariable(moduleName);
