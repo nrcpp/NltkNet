@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.27428.2043
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestApp", "TestApp\TestApp.csproj", "{A894A163-C9AA-4280-A267-DE0BA995273D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NltkNet", "NltkNet\NltkNet.csproj", "{9803F52C-3ABD-446F-AD0F-4C5C9B615780}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{A894A163-C9AA-4280-A267-DE0BA995273D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A894A163-C9AA-4280-A267-DE0BA995273D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A894A163-C9AA-4280-A267-DE0BA995273D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A894A163-C9AA-4280-A267-DE0BA995273D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9803F52C-3ABD-446F-AD0F-4C5C9B615780}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9803F52C-3ABD-446F-AD0F-4C5C9B615780}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9803F52C-3ABD-446F-AD0F-4C5C9B615780}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9803F52C-3ABD-446F-AD0F-4C5C9B615780}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {890AC7EA-003C-4572-A6C7-065FA6411C9D}
+	EndGlobalSection
+EndGlobal

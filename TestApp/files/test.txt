@@ -1,0 +1,2 @@
+﻿I'm using Visual Studio 2010. I have an IronPython console project and a C# console project. 
+This IronPython script works fine when I run it by itself.
