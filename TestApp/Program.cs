@@ -34,7 +34,10 @@ namespace TestApp
             var words = new List<string>() { "program", "programs", "programmer", "programming", "programmers" };
             var stem = stemmer.Stem("girls");
 
-            Console.WriteLine(stem);
+            Console.WriteLine("Stem: " +stem);
+
+            var lemmatizer = new Nltk.Stem.WordNetLemmatizer();
+            Console.WriteLine("Lemmatize: " + lemmatizer.Lemmatize("best"));
         }
 
         static void Main(string[] args)

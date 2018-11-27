@@ -23,6 +23,11 @@ namespace NltkNet
             {                                
                 public string Stem(string word) => PyObject.stem(word);
             }
+
+            public class WordNetLemmatizer : NltkClass<WordNetLemmatizer>
+            {
+                public string Lemmatize(string word) => PyObject.lemmatize(word);
+            }
         }
     }
 }
