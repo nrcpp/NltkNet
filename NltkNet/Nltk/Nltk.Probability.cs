@@ -9,13 +9,10 @@ namespace NltkNet
     {
         public static class Probability
         {
-            public class FreqDist
-            {
-                public dynamic PyObject { get; }
-
-                public FreqDist(dynamic samples)
-                {
-                    PyObject = CreateNltkObject("FreqDist", samples);
+            public class FreqDist : NltkClass<FreqDist>
+            {                
+                public FreqDist(object samples) : base(samples)
+                {                    
                 }
 
                 public static FreqDist Create(dynamic samples) => new FreqDist(samples);

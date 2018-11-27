@@ -28,6 +28,15 @@ namespace TestApp
                 Console.WriteLine(item.Key + ": " + item.Value);
         }
 
+        static void TestStem()
+        {
+            var stemmer = new Nltk.Stem.PorterStemmer();
+            var words = new List<string>() { "program", "programs", "programmer", "programming", "programmers" };
+            var stem = stemmer.Stem("girls");
+
+            Console.WriteLine(stem);
+        }
+
         static void Main(string[] args)
         {
             Nltk.Init(new List<string>
@@ -37,7 +46,17 @@ namespace TestApp
             });
 
             //TestTokenize();
-            TestProbability();
+            //TestProbability();
+            TestStem();
+
+            return;
+            var py = new PythonWrapper();
+            py.LoadCode("def toStr(s):\r\n\treturn s.lower();", null);
+            var word = py.CallFunction("toStr", "ABCD");
+
+            var words = Nltk.Call("word_tokenize", "this is a text");
+            foreach (var w in words)
+                Console.WriteLine(w + " " + (w).GetType().FullName);
         }
     }
 }

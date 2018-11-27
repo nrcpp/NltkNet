@@ -117,7 +117,7 @@ namespace NltkNet
         }
 
         public dynamic CallModuleFunction(string funcName, params dynamic[] arguments)
-        {
+        {            
             return _engine.Operations.InvokeMember(_defaultModule, funcName, arguments);
         }
 

@@ -60,5 +60,16 @@ namespace NltkNet
         }
 
         public static List<Tuple<int, int>> ListTupleIntInt(dynamic generatorObj) => ListTuple2<int, int>(generatorObj);
+
+
+        public class NltkClass<T> 
+        {
+            public dynamic PyObject { get; protected set; }
+
+            protected NltkClass(params object[] args)
+            {
+                PyObject = CreateNltkObject(typeof(T).Name, args);
+            }
+        }
     }
 }
