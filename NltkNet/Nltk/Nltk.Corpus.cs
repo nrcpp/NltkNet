@@ -51,7 +51,7 @@ namespace NltkNet
                     return result;
                 }
 
-                public List<string> Words(string fileid)
+                public List<string> Words(string fileid = null)
                 {
                     var words = py.CallMethod(CorpusObj, "words", fileid);
 
@@ -64,7 +64,7 @@ namespace NltkNet
 
 
                 // list of(list of str)
-                public List<List<string>> Sents(string fileid)
+                public List<List<string>> Sents(string fileid = null)
                 {
                     var sents = py.CallMethod(CorpusObj, "sents", fileid);
 
@@ -82,7 +82,7 @@ namespace NltkNet
                 }
 
                 // paras() : list of(list of (list of str))
-                public List<List<List<string>>> Paras(string fileid)
+                public List<List<List<string>>> Paras(string fileid = null)
                 {
                     var paras = py.CallMethod(CorpusObj, "paras", fileid);
 
@@ -107,7 +107,7 @@ namespace NltkNet
 
                 public string Raw(string fileid) => py.CallMethod(CorpusObj, "raw", fileid);
 
-                public virtual List<Tuple<string, string>> TaggedWords(string fileid)
+                public virtual List<Tuple<string, string>> TaggedWords(string fileid = null)
                 {
                     List<Tuple<string, string>> result = new List<Tuple<string, string>>();
 
@@ -149,9 +149,19 @@ namespace NltkNet
                 public WebText() : base("webtext") { }
             }
 
+            public class NpsChat : BaseCorpus
+            {
+                public NpsChat() : base("nps_chat") { }
+            }
+
             public class Words : BaseCorpus
             {
                 public Words() : base("words") { }
+            }
+
+            public class Timit : BaseCorpus
+            {
+                public Timit() : base("timit") { }
             }
         }
     }
