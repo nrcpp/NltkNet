@@ -73,6 +73,7 @@
     <Compile Include="Nltk\Nltk.Tokenize.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="PythonWrapper.cs" />
+    <Compile Include="Helpers.cs" />
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>

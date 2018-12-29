@@ -132,6 +132,14 @@ namespace NltkNet
                 public Gutenberg() : base("gutenberg") { }                
             }
 
+            public class StopWords : BaseCorpus
+            {
+                public StopWords() : base("stopwords") { }
+
+                public List<string> EnglishWords() => Words("english");
+            }
+
+
             public class WordNet : BaseCorpus
             {
                 public WordNet() : base("wordnet") { }

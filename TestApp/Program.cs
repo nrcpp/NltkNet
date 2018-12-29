@@ -44,13 +44,13 @@ namespace TestApp
 
         private static void TestCorpus()
         {
-            var corpus = new Nltk.Corpus.WordNet();
+            var corpus = new Nltk.Corpus.StopWords();
             var fileids = corpus.FileIds();
             //Nltk.Corpus.Brown.Words(fileids.First());
             //Nltk.Corpus.Brown.Sents(fileids.First());
             //Nltk.Corpus.Brown.Paras(fileids.First());
             //string text = Nltk.Corpus.Brown.Raw(fileids.First());
-            var ws = corpus.Words();
+            var ws = corpus.EnglishWords();
             //var ss = corpus.Sents();
 
             try
