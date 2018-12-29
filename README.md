@@ -51,19 +51,44 @@ If you&#39;re using NLTK library for learning, download _book_ related corpuses 
 
 Use such script either from Visual Studio Python Interactive Window or Iron Python command line:
 
-~~~~
-import nltk; 
-import nltk.corpus; 
-nltk.download(&#39;book&#39;);
-~~~~
+```python
+import nltk 
+import nltk.corpus
+nltk.download('book')
+```
 
 ## Getting Started
 
-After all third-party stuff is in-place then lets test NltkNet. Install it from Package Manager Console by typing:
+When whole third-party stuff is in-place then we are ready to test NltkNet. Install it from Package Manager Console by typing:
 
-~~~~
+```
 Install-Package NltkNet
-~~~~
+```
+
+*Use this code to initialize paths to IronPython standard and third-party libraries:*
+```C#
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using NltkNet;
+
+namespace TestApp
+{
+    class Program
+    {        
+        static void Main(string[] args)
+        {
+            Nltk.Init(new List<string>
+            {
+                @"C:\IronPython27\Lib",                 // Path to IronPython standard libraries
+                @"C:\IronPython27\Lib\site-packages",   // Path to IronPython third-party libraries
+            });           
+        }
+    }
+}
+```
+
 
 
 
