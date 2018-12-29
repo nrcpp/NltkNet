@@ -8,7 +8,7 @@ namespace NltkNet
 {
     public static partial class Nltk
     {
-        public static PythonWrapper py;
+        private static PythonWrapper py;
 
         public static void Init(List<string> libsPaths)
         {

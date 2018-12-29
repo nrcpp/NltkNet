@@ -69,6 +69,7 @@
     <Compile Include="Nltk\Nltk.cs" />
     <Compile Include="Nltk\Nltk.Probability.cs" />
     <Compile Include="Nltk\Nltk.Stem.cs" />
+    <Compile Include="Nltk\Nltk.Corpus.cs" />
     <Compile Include="Nltk\Nltk.Tokenize.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="PythonWrapper.cs" />

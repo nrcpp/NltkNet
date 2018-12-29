@@ -89,19 +89,20 @@ namespace NltkNet
             return _scope.GetVariable<T>(variable);
         }
 
-        public T GetFunction<T>(string funcName)
+        // aliases
+        public T GetFunction<T>(string funcName) => _scope.GetVariable<T>(funcName);
+        public dynamic GetObject(string objectName) => _scope.GetVariable(objectName);
+        public dynamic GetModule(string moduleName) => _scope.GetVariable(moduleName);
+
+
+        public dynamic CallMethod(dynamic pyObject, string method, params dynamic[] parameters)
         {
-            return _scope.GetVariable<T>(funcName);
+            return _engine.Operations.InvokeMember(pyObject, method, parameters);
         }
 
-        public void CallMethod(dynamic pyObject, string method, params dynamic[] parameters)
+        public dynamic CallMethod(string method, params dynamic[] parameters)
         {
-            _engine.Operations.InvokeMember(pyObject, method, parameters);
-        }
-
-        public void CallMethod(string method, params dynamic[] parameters)
-        {
-            _engine.Operations.InvokeMember(_pythonClass, method, parameters);
+            return _engine.Operations.InvokeMember(_pythonClass, method, parameters);
         }
 
         public dynamic CallFunction(string funcName, params dynamic[] parameters)
@@ -115,6 +116,7 @@ namespace NltkNet
             var module = GetVariable(moduleName);
             return _engine.Operations.InvokeMember(module, funcName, arguments);
         }
+
 
         public dynamic CallModuleFunction(string funcName, params dynamic[] arguments)
         {            

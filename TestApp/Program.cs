@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 
 namespace TestApp
 {
@@ -40,17 +41,46 @@ namespace TestApp
             Console.WriteLine("Lemmatize: " + lemmatizer.Lemmatize("best"));
         }
 
+
+        private static void TestCorpus()
+        {
+            var fileids = Nltk.Corpus.Brown.FileIds();
+            //Nltk.Corpus.Brown.Words(fileids.First());
+            //Nltk.Corpus.Brown.Sents(fileids.First());
+            //Nltk.Corpus.Brown.Paras(fileids.First());
+            string text = Nltk.Corpus.Brown.Raw(fileids.First());
+
+            //var p = new NltkNet.PythonWrapper();
+            //p.AddLibPaths(new List<string>
+            //{
+            //    @"C:\IronPython27\Lib",
+            //    @"C:\IronPython27\Lib\site-packages",
+            //});
+            //p.ImportModule("nltk");
+
+            //p.ImportModule("nltk.corpus");
+
+            //var corpus = p.GetVariable("nltk.corpus");            
+
+            //Console.WriteLine(string.Join(", ", words));
+        }
+
         static void Main(string[] args)
         {
             Nltk.Init(new List<string>
             {
                 @"C:\IronPython27\Lib",
                 @"C:\IronPython27\Lib\site-packages",
+                @"C:\IronPython27\Lib\site-packages\nltk",
+                @"C:\IronPython27\Lib\site-packages\nltk\corpus",
+                @"C:\Users\nrcpp\AppData\Roaming\nltk_data",
+                @"C:\Users\nrcpp\AppData\Roaming\nltk_data\corpora",
             });
 
             //TestTokenize();
             //TestProbability();
-            TestStem();
+            //TestStem();
+            TestCorpus();
 
             return;
             var py = new PythonWrapper();
@@ -61,5 +91,6 @@ namespace TestApp
             foreach (var w in words)
                 Console.WriteLine(w + " " + (w).GetType().FullName);
         }
+
     }
 }
