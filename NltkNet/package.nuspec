@@ -4,7 +4,7 @@
     <!--*-->
     <id>NltkNet</id>
     <!--*-->
-    <version>1.0.2</version>
+    <version>1.0.4</version>
     <title>NltkNet</title>
     <!--*-->
     <authors>Denis Kazakov</authors>
@@ -18,7 +18,7 @@
     <!--*-->
     <releaseNotes>NLTK lib wrapper for .NET 4.5 and higher. Original project was written using Python. See https://www.nltk.org/ for details.</releaseNotes>
     <copyright>Copyright ©  2018</copyright>
-    <tags>nltk,nlp,natural language processing,iron python</tags>
+    <tags>nltk,nlp,"natural language processing","iron python"</tags>
     <dependencies>
       <dependency id="IronPython" version="2.7.9" />
     </dependencies>

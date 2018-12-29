@@ -8,11 +8,11 @@ namespace TestApp
 {
     class Program
     {
-        static string text = File.ReadAllText("files/test.txt");
+        static string text = "This IronPython script works fine when I run it by itself.";
 
         static void TestTokenize()
-        {
-            //List<Tuple<int, int>> tuples = Nltk.Tokenize.Util.RegexpSpanTokenize(text, "\\s");
+        {            
+            List<Tuple<int, int>> tuples = Nltk.Tokenize.Util.RegexpSpanTokenize(text, "\\s");
             var list = Nltk.Tokenize.SentTokenize(text);
             if (list != null)
                 foreach (var item in list)
@@ -44,35 +44,22 @@ namespace TestApp
 
         private static void TestCorpus()
         {
-            var corpus = new Nltk.Corpus.Brown();
+            // NOTE: brown corpus have to be installed. By default to %appdata%\nltk_data\corpora\brown
+            // See https://github.com/nrcpp/NltkNet/blob/master/NltkNet/Nltk/Nltk.Corpus.cs for more corpora
+            var corpus = new Nltk.Corpus.Brown();       
             var fileids = corpus.FileIds();
-            //Nltk.Corpus.Brown.Words(fileids.First());
-            //Nltk.Corpus.Brown.Sents(fileids.First());
-            //Nltk.Corpus.Brown.Paras(fileids.First());
-            //string text = Nltk.Corpus.Brown.Raw(fileids.First());
-            var ws = corpus.Words(null);
-            //var ss = corpus.Sents(fileids.First());
+            var words = corpus.Words(fileids.First());
+            var sentences = corpus.Sents(fileids.First());
+            var paragraphs = corpus.Paras(fileids.First());
+            string text = corpus.Raw(fileids.First());
+            var taggedWords = corpus.TaggedWords(fileids.First());
 
-            try
-            {
-                var tw = corpus.TaggedWords(fileids.First());
-            }
-            catch { }
+            var stopWordsCorpus = new Nltk.Corpus.StopWords();
+            var stopWords = stopWordsCorpus.Words(null);
 
-
-            //var p = new NltkNet.PythonWrapper();
-            //p.AddLibPaths(new List<string>
-            //{
-            //    @"C:\IronPython27\Lib",
-            //    @"C:\IronPython27\Lib\site-packages",
-            //});
-            //p.ImportModule("nltk");
-
-            //p.ImportModule("nltk.corpus");
-
-            //var corpus = p.GetVariable("nltk.corpus");            
-
-            //Console.WriteLine(string.Join(", ", words));
+            // Process given 
+            Console.WriteLine("Stopwords: \r\n" + string.Join(", ", stopWords));
+            Console.WriteLine("Words from Brown corpus: \r\n" + string.Join(", ", words));
         }
 
         static void Main(string[] args)
@@ -81,26 +68,12 @@ namespace TestApp
             {
                 @"C:\IronPython27\Lib",
                 @"C:\IronPython27\Lib\site-packages",
-                //@"C:\IronPython27\Lib\site-packages\nltk",
-                //@"C:\IronPython27\Lib\site-packages\nltk\corpus",
-                //@"C:\Users\nrcpp\AppData\Roaming\nltk_data",
-                //@"C:\Users\nrcpp\AppData\Roaming\nltk_data\corpora",
             });
 
-            //TestTokenize();
-            //TestProbability();
-            //TestStem();
+            TestTokenize();
+            TestProbability();
+            TestStem();
             TestCorpus();
-
-            return;
-            var py = new PythonWrapper();
-            py.LoadCode("def toStr(s):\r\n\treturn s.lower();", null);
-            var word = py.CallFunction("toStr", "ABCD");
-
-            var words = Nltk.Call("word_tokenize", "this is a text");
-            foreach (var w in words)
-                Console.WriteLine(w + " " + (w).GetType().FullName);
         }
-
     }
 }

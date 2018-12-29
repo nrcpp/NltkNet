@@ -19,7 +19,7 @@ namespace NltkNet
                 public static List<Tuple<int,int>> RegexpSpanTokenize(string text, string regexp)
                 {
                     dynamic generator = Call("regexp_span_tokenize", text, regexp);
-                    return ListTuple2(generator);
+                    return ListTuple2<int,int>(generator);
                 }
             }
         }
