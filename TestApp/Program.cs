@@ -44,7 +44,7 @@ namespace TestApp
 
         private static void TestCorpus()
         {
-            var corpus = new Nltk.Corpus.Timit();
+            var corpus = new Nltk.Corpus.Brown();
             var fileids = corpus.FileIds();
             //Nltk.Corpus.Brown.Words(fileids.First());
             //Nltk.Corpus.Brown.Sents(fileids.First());
@@ -81,10 +81,10 @@ namespace TestApp
             {
                 @"C:\IronPython27\Lib",
                 @"C:\IronPython27\Lib\site-packages",
-                @"C:\IronPython27\Lib\site-packages\nltk",
-                @"C:\IronPython27\Lib\site-packages\nltk\corpus",
-                @"C:\Users\nrcpp\AppData\Roaming\nltk_data",
-                @"C:\Users\nrcpp\AppData\Roaming\nltk_data\corpora",
+                //@"C:\IronPython27\Lib\site-packages\nltk",
+                //@"C:\IronPython27\Lib\site-packages\nltk\corpus",
+                //@"C:\Users\nrcpp\AppData\Roaming\nltk_data",
+                //@"C:\Users\nrcpp\AppData\Roaming\nltk_data\corpora",
             });
 
             //TestTokenize();

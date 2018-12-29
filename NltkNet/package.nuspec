@@ -11,7 +11,7 @@
     <owners>Denis Kazakov</owners>
     <licenseUrl>https://opensource.org/licenses/MIT</licenseUrl>
     <projectUrl>https://github.com/nrcpp/NltkNet</projectUrl>
-    <iconUrl>https://i.ibb.co/F6dPq7p/icon.png</iconUrl>
+    <iconUrl>https://i.ibb.co/CtfNJy6/icon.png</iconUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <!--*-->
     <description>NLTK python library wrapper for .NET</description>

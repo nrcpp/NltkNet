@@ -6,11 +6,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="IronPython" Version="2.7.9" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <ProjectReference Include="..\NltkNet\NltkNet.csproj" />
+    <PackageReference Include="NltkNet" Version="1.0.2" />
   </ItemGroup>
 
   <ItemGroup>

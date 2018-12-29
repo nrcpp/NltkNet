@@ -1,0 +1,31 @@
+﻿<Window x:Class="SampleApp.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:SampleApp"
+        mc:Ignorable="d"
+        Title="NLTK .NET Sample App" Height="450" Width="800">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="30"/>
+            <RowDefinition Height="0.5*"/>
+            <RowDefinition Height="5"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        <!--<Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto"/>
+            <ColumnDefinition Width="Auto"/>
+        </Grid.ColumnDefinitions>-->
+
+        <StackPanel Background="LightGray">
+            
+        </StackPanel>
+
+        <TextBox AcceptsReturn="True" AcceptsTab="True" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto"
+                 Name="_inputText" Grid.Row="1"/>
+        <GridSplitter Grid.Row="2" Height="5" VerticalAlignment="Stretch" HorizontalAlignment="Stretch"/>
+        <TextBox AcceptsReturn="True" AcceptsTab="True" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto"
+                 Name="_logText" Grid.Row="3" IsReadOnly="True"/>
+    </Grid>
+</Window>
