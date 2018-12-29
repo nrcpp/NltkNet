@@ -59,7 +59,7 @@ nltk.download('book')
 
 ## Getting Started
 
-When whole third-party stuff is in-place then we are ready to test NltkNet. Install it from Package Manager Console by typing:
+When whole third-party stuff is in-place then we are ready to test NltkNet. Install NltkNet nuget package using your usual way. For example from Package Manager Console by pasting:
 
 ```
 Install-Package NltkNet
