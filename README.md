@@ -39,17 +39,17 @@ There are different ways to install nltk library. If you have experience with us
   - Type there nltk and choose &#39;pip install nltk&#39;
   - After installing, make sure you have installed nltk folder at &lt;IronPython Path&gt;\Libs\site-packages\nltk_
 - _From command line using pip._ Run &#39;pip install nltk&#39; from command line. Path to _Pip.exe_ have to be added to PATH environment variable. If you have several Python environments in system then, make sure you&#39;re installing _nltk_ library to IronPython path.
-- _From binaries._ Download binaries from [https://pypi.org/project/nltk/#files](https://pypi.org/project/nltk/#files). And run installer or unpack archive to &lt;IronPythonPath&gt;\Libs\site-packages\nltk_. See [https://www.nltk.org/install.html](https://www.nltk.org/install.html) for more details.
+- _From binaries._ Download binaries from [https://pypi.org/project/nltk/#files](https://pypi.org/project/nltk/#files). And run installer or unpack archive to &lt;IronPythonPath&gt;\Libs\site-packages\nltk. See [https://www.nltk.org/install.html](https://www.nltk.org/install.html) for more details.
 
 ### **Install NLTK corpuses**
 
-_Corpus_(plural _corpora_) or _text corpus_ is a large and structured set of texts (nowadays usually electronically stored and processed). In [corpus linguistics](https://en.wikipedia.org/wiki/Corpus_linguistics), they are used to do statistical analysis and [hypothesis testing](https://en.wikipedia.org/wiki/Statistical_hypothesis_testing), checking occurrences or validating linguistic rules within a specific language territory.
+_Corpus_(plural _corpora_) or _text corpus_ is a large and structured set of texts (nowadays usually electronically stored and processed). In corpus linguistics, they are used to do statistical analysis and hypothesis testing, checking occurrences or validating linguistic rules within a specific language territory.
 
 NLTK library contains lots of ready-to-use corpuses which usually stores as a set of text files. It will be useful to load certain corpus on studying NLP using NLTK library, instead of creating it from scratch.
 
-If you&#39;re using NLTK library for learning, download _book_ related corpuses and linguistic data.
+If you&#39;re using NLTK library for learning NLP, download NLTK _book_ related corpuses and linguistic data.
 
-Use such script either from Visual Studio Python Interactive Window or Iron Python command line:
+Use such script either from *Visual Studio Python Interactive Window* or *Iron Python command line* to do so:
 
 ```python
 import nltk 
