@@ -44,14 +44,14 @@ namespace TestApp
 
         private static void TestCorpus()
         {
-            var corpus = new Nltk.Corpus.WebText();
+            var corpus = new Nltk.Corpus.Words();
             var fileids = corpus.FileIds();
             //Nltk.Corpus.Brown.Words(fileids.First());
             //Nltk.Corpus.Brown.Sents(fileids.First());
             //Nltk.Corpus.Brown.Paras(fileids.First());
             //string text = Nltk.Corpus.Brown.Raw(fileids.First());
             var ws = corpus.Words(fileids.First());
-            var ss = corpus.Sents(fileids.First());
+            //var ss = corpus.Sents(fileids.First());
 
             try
             {

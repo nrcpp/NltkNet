@@ -149,23 +149,9 @@ namespace NltkNet
                 public WebText() : base("webtext") { }
             }
 
-            public class WordNet : BaseCorpus
+            public class Words : BaseCorpus
             {
-                public WordNet() : base("wordnet") { }
-
-                public new List<string> Words(string lang = "eng")
-                {
-                    var words = (IEnumerator<dynamic>)py.CallMethod(CorpusObj, "words", lang);
-
-                    var result = new List<string>();
-
-                    while (words.MoveNext())
-                    {
-                        result.Add((string)words.Current);
-                    }
-
-                    return result;
-                }
+                public Words() : base("words") { }
             }
         }
     }
