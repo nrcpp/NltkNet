@@ -12,7 +12,7 @@ C# wrapper for the NLTK library ([https://nltk.org](https://nltk.org))
 
 - [IronPython](https://www.nuget.org/packages/IronPython) - 2.7.9 or later (Includes [DynamicLanguageRuntime](https://www.nuget.org/packages/DynamicLanguageRuntime/))
 
-### **Pre-Requirements**
+## **Pre-Requirements**
 
 Before start using NltkNet wrapper it is required to download and install latest IronPython binaries from [official site](http://ironpython.net/). You will need IronPython standard libraries for NLTK, as well as installing NLTK library for IronPython. Also IronPython interpreter will be helpful to test python scripts interactively from Visual Studio or command line.
 
@@ -39,7 +39,7 @@ There are different ways to install nltk library. If you have experience with us
   - Type there nltk and choose &#39;pip install nltk&#39;
   - After installing, make sure you have installed nltk folder at &lt;IronPython Path&gt;\Libs\site-packages\nltk_
 - _From command line using pip._ Run &#39;pip install nltk&#39; from command line. Path to _Pip.exe_ have to be added to PATH environment variable. If you have several Python environments in system then, make sure you&#39;re installing _nltk_ library to IronPython path.
-- _From binaries._ Download binaries from [https://pypi.org/project/nltk/#files](https://pypi.org/project/nltk/#files). And run installer or unpack archive to &lt;_IronPythonPath_&gt;\_Libs\site-packages\nltk_. See [https://www.nltk.org/install.html](https://www.nltk.org/install.html) for more details.
+- _From binaries._ Download binaries from [https://pypi.org/project/nltk/#files](https://pypi.org/project/nltk/#files). And run installer or unpack archive to &lt;IronPythonPath&gt;\Libs\site-packages\nltk_. See [https://www.nltk.org/install.html](https://www.nltk.org/install.html) for more details.
 
 ### **Install NLTK corpuses**
 
@@ -51,6 +51,19 @@ If you&#39;re using NLTK library for learning, download _book_ related corpuses 
 
 Use such script either from Visual Studio Python Interactive Window or Iron Python command line:
 
-import nltk; import nltk.corpus; nltk.download(&#39;book&#39;);
+~~~~
+import nltk; 
+import nltk.corpus; 
+nltk.download(&#39;book&#39;);
+~~~~
 
-## Gettings Started
+## Getting Started
+
+After all third-party stuff is in-place then lets test NltkNet. Install it from Package Manager Console by typing:
+
+~~~~
+Install-Package NltkNet
+~~~~
+
+
+
