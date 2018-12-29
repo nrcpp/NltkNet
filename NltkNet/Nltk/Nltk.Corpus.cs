@@ -139,6 +139,15 @@ namespace NltkNet
                 public List<string> EnglishWords() => Words("english");
             }
 
+            public class Inaugural : BaseCorpus
+            {
+                public Inaugural() : base("inaugural") { }
+            }
+
+            public class WebText : BaseCorpus
+            {
+                public WebText() : base("webtext") { }
+            }
 
             public class WordNet : BaseCorpus
             {
