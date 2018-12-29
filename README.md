@@ -34,12 +34,12 @@ It is expectable that most developers already have experience with NLTK library 
 There are different ways to install nltk library. If you have experience with using Python and installing packages then everything is clear here.
 
 - _From Visual Studio._ Make sure you&#39;re added IronPython to Python Environments of Visual Studio on the previous step.
-  - Then go to View-\&gt;Other Windows-\&gt;Python Environments to open existing Python Environments.
+  - Then go to View-&gt;Other Windows-&gt;Python Environments to open existing Python Environments.
   - Choose IronPython environment and then choose _Packages (PyPi)_ from combobox below
   - Type there nltk and choose &#39;pip install nltk&#39;
-  - After installing, make sure you have installed nltk folder at _\&lt;IronPython Path\&gt;\Libs\site-packages\nltk_
+  - After installing, make sure you have installed nltk folder at &lt;IronPython Path&gt;\Libs\site-packages\nltk_
 - _From command line using pip._ Run &#39;pip install nltk&#39; from command line. Path to _Pip.exe_ have to be added to PATH environment variable. If you have several Python environments in system then, make sure you&#39;re installing _nltk_ library to IronPython path.
-- _From binaries._ Download binaries from [https://pypi.org/project/nltk/#files](https://pypi.org/project/nltk/#files). And run installer or unpack archive to \&lt;_IronPythonPath\&gt;_\_Libs\site-packages\nltk_. See [https://www.nltk.org/install.html](https://www.nltk.org/install.html) for more details.
+- _From binaries._ Download binaries from [https://pypi.org/project/nltk/#files](https://pypi.org/project/nltk/#files). And run installer or unpack archive to &lt;_IronPythonPath_&gt;\_Libs\site-packages\nltk_. See [https://www.nltk.org/install.html](https://www.nltk.org/install.html) for more details.
 
 ### **Install NLTK corpuses**
 
