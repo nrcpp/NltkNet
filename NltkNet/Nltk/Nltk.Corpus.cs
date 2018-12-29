@@ -1,4 +1,5 @@
-﻿using System;
+﻿using IronPython.Runtime;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -26,29 +27,33 @@ namespace NltkNet
                 // TODO:
             }
 
-            public static class Brown
+            public class BaseCorpus
             {
-                static dynamic _brownObj;
-                static Brown()
+                public string CorpusName { get; }
+                public dynamic CorpusObj { get; }
+
+                protected BaseCorpus(string name)
                 {
-                    py.LoadCode("from nltk.corpus import brown", null);
-                    _brownObj = py.GetVariable("brown");
+                    CorpusName = name;
+
+                    py.LoadCode($"from nltk.corpus import {name}", null);
+                    CorpusObj = py.GetVariable(name);
                 }
 
-                public static List<string> FileIds()
+                public List<string> FileIds()
                 {
-                    var words = py.CallMethod(_brownObj, "fileids");
+                    var words = py.CallMethod(CorpusObj, "fileids");
 
                     var result = new List<string>();
-                    foreach( var fi in words)
+                    foreach (var fi in words)
                         result.Add((string)fi);
 
                     return result;
                 }
 
-                public static List<string> Words(string fileid)
-                {                    
-                    var words = py.CallMethod(_brownObj, "words", fileid);
+                public List<string> Words(string fileid)
+                {
+                    var words = py.CallMethod(CorpusObj, "words", fileid);
 
                     var result = new List<string>();
                     foreach (var w in words)
@@ -59,9 +64,9 @@ namespace NltkNet
 
 
                 // list of(list of str)
-                public static List<List<string>> Sents(string fileid)
+                public List<List<string>> Sents(string fileid)
                 {
-                    var sents = py.CallMethod(_brownObj, "sents", fileid);
+                    var sents = py.CallMethod(CorpusObj, "sents", fileid);
 
                     var result = new List<List<string>>();
                     foreach (var s in sents)
@@ -77,9 +82,9 @@ namespace NltkNet
                 }
 
                 // paras() : list of(list of (list of str))
-                public static List<List<List<string>>> Paras(string fileid)
+                public List<List<List<string>>> Paras(string fileid)
                 {
-                    var paras = py.CallMethod(_brownObj, "paras", fileid);
+                    var paras = py.CallMethod(CorpusObj, "paras", fileid);
 
                     var result = new List<List<List<string>>>();
                     foreach (var p in paras)
@@ -100,7 +105,50 @@ namespace NltkNet
                     return result;
                 }
 
-                public static string Raw(string fileid) => py.CallMethod(_brownObj, "raw", fileid);
+                public string Raw(string fileid) => py.CallMethod(CorpusObj, "raw", fileid);
+
+                public virtual List<Tuple<string, string>> TaggedWords(string fileid)
+                {
+                    List<Tuple<string, string>> result = new List<Tuple<string, string>>();
+
+                    var taggedWords = py.CallMethod(CorpusObj, "tagged_words", fileid);
+                    foreach (var tw in taggedWords)
+                    {
+                        var wordTag = new Tuple<string, string>(tw[0], tw[1]);
+                        result.Add(wordTag);
+                    }
+
+                    return result;
+                }
+            }
+
+            public class Brown : BaseCorpus
+            {
+                public Brown() : base("brown") { }                
+            }
+
+            public class Gutenberg : BaseCorpus
+            {
+                public Gutenberg() : base("gutenberg") { }                
+            }
+
+            public class WordNet : BaseCorpus
+            {
+                public WordNet() : base("wordnet") { }
+
+                public new List<string> Words(string lang = "eng")
+                {
+                    var words = (IEnumerator<dynamic>)py.CallMethod(CorpusObj, "words", lang);
+
+                    var result = new List<string>();
+
+                    while (words.MoveNext())
+                    {
+                        result.Add((string)words.Current);
+                    }
+
+                    return result;
+                }
             }
         }
     }

@@ -44,11 +44,21 @@ namespace TestApp
 
         private static void TestCorpus()
         {
-            var fileids = Nltk.Corpus.Brown.FileIds();
+            var corpus = new Nltk.Corpus.WordNet();
+            var fileids = corpus.FileIds();
             //Nltk.Corpus.Brown.Words(fileids.First());
             //Nltk.Corpus.Brown.Sents(fileids.First());
             //Nltk.Corpus.Brown.Paras(fileids.First());
-            string text = Nltk.Corpus.Brown.Raw(fileids.First());
+            //string text = Nltk.Corpus.Brown.Raw(fileids.First());
+            var ws = corpus.Words();
+            //var ss = corpus.Sents();
+
+            try
+            {
+                var tw = corpus.TaggedWords(fileids.First());
+            }
+            catch { }
+
 
             //var p = new NltkNet.PythonWrapper();
             //p.AddLibPaths(new List<string>
