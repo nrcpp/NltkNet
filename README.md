@@ -89,7 +89,7 @@ namespace TestApp
 }
 ```
 
-**More samples for version 1.0.2**
+**More practical samples**
 ```C#
 using NltkNet;
 using System;
@@ -173,4 +173,11 @@ namespace TestApp
 
 ```
 
+## What's next?
+
+**NltkNet** wrapper may be considered as a starting point for learning NLP using C# and Visual Studio. Current version of NltkNet does not cover lots of features of original NLTK library written in Python. You may use workarounds to execute Python code that didn't wrapped yet.
+Take a look at methods `NltkNet.Call` and `NltkNet.CreateNltkObject`.
+Also you could execute any of Python code using `PythonWrapper.LoadFromCode` method.
+
+Documentation will be extended with more examples of using NLTK library features that didn't wrapped yet.
 
