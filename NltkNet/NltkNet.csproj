@@ -67,6 +67,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Helpers\NltkResultExtensions.cs" />
+    <Compile Include="Helpers\Extensions.cs" />
     <Compile Include="Nltk\Nltk.cs" />
     <Compile Include="Nltk\Nltk.Probability.cs" />
     <Compile Include="Nltk\Nltk.Stem.cs" />
@@ -74,7 +76,7 @@
     <Compile Include="Nltk\Nltk.Tokenize.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="PythonWrapper.cs" />
-    <Compile Include="Helpers.cs" />
+    <Compile Include="Helpers\BaseClasses.cs" />
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>

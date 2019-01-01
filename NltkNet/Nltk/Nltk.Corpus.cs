@@ -36,11 +36,11 @@ namespace NltkNet
                 {
                     CorpusName = name;
 
-                    py.LoadCode($"from nltk.corpus import {name}", null);
+                    py.ExecuteScript($"from nltk.corpus import {name}");
                     CorpusObj = py.GetVariable(name);
                 }
 
-                public List<string> FileIds()
+                public NltkResultListString FileIds()
                 {
                     var words = py.CallMethod(CorpusObj, "fileids");
 
@@ -48,10 +48,14 @@ namespace NltkNet
                     foreach (var fi in words)
                         result.Add((string)fi);
 
-                    return result;
+                    return new NltkResultListString()
+                    {
+                        AsNet = result,
+                        AsPython = words,
+                    };
                 }
 
-                public List<string> Words(string fileid = null)
+                public NltkResultListStringDynamic Words(string fileid = null)
                 {
                     var words = py.CallMethod(CorpusObj, "words", fileid);
 
@@ -59,12 +63,16 @@ namespace NltkNet
                     foreach (var w in words)
                         result.Add((string)w);
 
-                    return result;
+                    return new NltkResultListStringDynamic()
+                    {
+                        AsNet = result,
+                        AsPython = words,
+                    };
                 }
-
+        
 
                 // list of(list of str)
-                public List<List<string>> Sents(string fileid = null)
+                public NltkResultListListString Sents(string fileid = null)
                 {
                     var sents = py.CallMethod(CorpusObj, "sents", fileid);
 
@@ -78,11 +86,15 @@ namespace NltkNet
                         result.Add(words);
                     }
 
-                    return result;
+                    return new NltkResultListListString()
+                    {
+                        AsNet = result,
+                        AsPython = (dynamic)sents
+                    };
                 }
 
                 // paras() : list of(list of (list of str))
-                public List<List<List<string>>> Paras(string fileid = null)
+                public NltkResultListListListString Paras(string fileid = null)
                 {
                     var paras = py.CallMethod(CorpusObj, "paras", fileid);
 
@@ -102,12 +114,16 @@ namespace NltkNet
                         result.Add(sents);
                     }
 
-                    return result;
+                    return new NltkResultListListListString()
+                    {
+                        AsPython = paras,
+                        AsNet = result
+                    };
                 }
 
                 public string Raw(string fileid) => py.CallMethod(CorpusObj, "raw", fileid);
 
-                public virtual List<Tuple<string, string>> TaggedWords(string fileid = null)
+                public virtual NltkResultListTupleStringString TaggedWords(string fileid = null)
                 {
                     List<Tuple<string, string>> result = new List<Tuple<string, string>>();
 
@@ -118,7 +134,11 @@ namespace NltkNet
                         result.Add(wordTag);
                     }
 
-                    return result;
+                    return new NltkResultListTupleStringString()
+                    {
+                        AsNet = result,
+                        AsPython = taggedWords,
+                    };
                 }
             }
 
@@ -136,7 +156,7 @@ namespace NltkNet
             {
                 public StopWords() : base("stopwords") { }
 
-                public List<string> EnglishWords() => Words("english");
+                public NltkResultListStringDynamic EnglishWords() => Words("english");
             }
 
             public class Inaugural : BaseCorpus

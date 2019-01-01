@@ -17,12 +17,16 @@ namespace NltkNet
 
                 public static FreqDist Create(dynamic samples) => new FreqDist(samples);
 
-                public Dictionary<string, int> MostCommon(int? number)
+                public NltkResultDictionaryStringInt MostCommon(int? number)
                 {
                     var dict = PyObject.most_common(number);
-                    var result = ListDictionary<string, int>(dict);
+                    var result = ToDictionary<string, int>(dict);
 
-                    return result;
+                    return new NltkResultDictionaryStringInt()
+                    {
+                        AsNet = result,
+                        AsPython = dict
+                    };
                 }
             }
         }

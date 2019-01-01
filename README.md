@@ -37,7 +37,7 @@ There are different ways to install nltk library. If you have experience with us
   - Then go to View-&gt;Other Windows-&gt;Python Environments to open existing Python Environments.
   - Choose IronPython environment and then choose _Packages (PyPi)_ from combobox below
   - Type there nltk and choose &#39;pip install nltk&#39;
-  - After installing, make sure you have installed nltk folder at &lt;IronPython Path&gt;\Libs\site-packages\nltk_
+  - After installing, make sure you have installed nltk folder at &lt;IronPython Path&gt;\Libs\site-packages\nltk
 - _From command line using pip._ Run &#39;pip install nltk&#39; from command line. Path to _Pip.exe_ have to be added to PATH environment variable. If you have several Python environments in system then, make sure you&#39;re installing _nltk_ library to IronPython path.
 - _From binaries._ Download binaries from [https://pypi.org/project/nltk/#files](https://pypi.org/project/nltk/#files). And run installer or unpack archive to &lt;IronPythonPath&gt;\Libs\site-packages\nltk. See [https://www.nltk.org/install.html](https://www.nltk.org/install.html) for more details.
 

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using IronPython.Runtime;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -9,17 +10,37 @@ namespace NltkNet
     {
         public static class Tokenize
         {
-            public static List<string> WordTokenize(string text) => CallGetList<string>("word_tokenize", text);
-            public static List<string> WordpunctTokenize(string text) => CallGetList<string>("wordpunct_tokenize", text);
+            private static NltkResultListString TokenizeCall(string funcName, string text)
+            {
+                IronPython.Runtime.List list = Call(funcName, text);
+                var result = list.Cast<string>().ToList();
 
-            public static List<string> SentTokenize(string text) => CallGetList<string>("sent_tokenize", text);
+                return new NltkResultListString()
+                {
+                    AsNet = result,
+                    AsPython = list,
+                };
+            }
+
+            public static NltkResultListString WordTokenize(string text) => TokenizeCall("word_tokenize", text);
+            
+            public static NltkResultListString WordpunctTokenize(string text) => TokenizeCall("wordpunct_tokenize", text);
+
+            public static NltkResultListString SentTokenize(string text) => TokenizeCall("sent_tokenize", text);
+
 
             public static class Util
             {
-                public static List<Tuple<int,int>> RegexpSpanTokenize(string text, string regexp)
+                public static NltkResultListTupleIntInt RegexpSpanTokenize(string text, string regexp)
                 {
-                    dynamic generator = Call("regexp_span_tokenize", text, regexp);
-                    return ListTuple2<int,int>(generator);
+                    PythonGenerator generator = Call("regexp_span_tokenize", text, regexp);
+                    var result = ToListTuple<int,int>(generator);
+
+                    return new NltkResultListTupleIntInt()
+                    {
+                        AsNet = result,
+                        AsPython = generator,
+                    };
                 }
             }
         }

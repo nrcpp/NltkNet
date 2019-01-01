@@ -26,19 +26,21 @@ namespace NltkNet
         {
             string code = File.ReadAllText(pyfile);
 
-            LoadCode(code, className);
+            dynamic result = ExecuteScript(code);
+            if (className != null)
+                _pythonClass = _engine.Operations.Invoke(_scope.GetVariable(className));
         }
 
-        public void LoadCode(string code, string className)
+
+        public dynamic ExecuteScript(string code)
         {
             _source = _engine.CreateScriptSourceFromString(code, Microsoft.Scripting.SourceCodeKind.Statements);
             _compiled = _source.Compile();
 
-            _compiled.Execute(_scope);
+            dynamic result = _compiled.Execute(_scope);
 
-            if (className != null)
-                _pythonClass = _engine.Operations.Invoke(_scope.GetVariable(className));
-        }
+            return result;
+        }        
 
 
         public void ImportModule(string moduleName) =>
