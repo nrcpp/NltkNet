@@ -12,7 +12,7 @@ namespace NltkNet
         {
             static Corpus()
             {
-                py.ImportModule("nltk.corpus");
+                Py.ImportModule("nltk.corpus");
             }
 
             /// <summary>
@@ -36,13 +36,13 @@ namespace NltkNet
                 {
                     CorpusName = name;
 
-                    py.ExecuteScript($"from nltk.corpus import {name}");
-                    CorpusObj = py.GetVariable(name);
+                    Py.ExecuteScript($"from nltk.corpus import {name}");
+                    CorpusObj = Py.GetVariable(name);
                 }
 
                 public NltkResultListString FileIds()
                 {
-                    var words = py.CallMethod(CorpusObj, "fileids");
+                    var words = Py.CallMethod(CorpusObj, "fileids");
 
                     var result = new List<string>();
                     foreach (var fi in words)
@@ -57,7 +57,7 @@ namespace NltkNet
 
                 public NltkResultListStringDynamic Words(string fileid = null)
                 {
-                    var words = py.CallMethod(CorpusObj, "words", fileid);
+                    var words = Py.CallMethod(CorpusObj, "words", fileid);
 
                     var result = new List<string>();
                     foreach (var w in words)
@@ -74,7 +74,7 @@ namespace NltkNet
                 // list of(list of str)
                 public NltkResultListListString Sents(string fileid = null)
                 {
-                    var sents = py.CallMethod(CorpusObj, "sents", fileid);
+                    var sents = Py.CallMethod(CorpusObj, "sents", fileid);
 
                     var result = new List<List<string>>();
                     foreach (var s in sents)
@@ -96,7 +96,7 @@ namespace NltkNet
                 // paras() : list of(list of (list of str))
                 public NltkResultListListListString Paras(string fileid = null)
                 {
-                    var paras = py.CallMethod(CorpusObj, "paras", fileid);
+                    var paras = Py.CallMethod(CorpusObj, "paras", fileid);
 
                     var result = new List<List<List<string>>>();
                     foreach (var p in paras)
@@ -121,13 +121,13 @@ namespace NltkNet
                     };
                 }
 
-                public string Raw(string fileid) => py.CallMethod(CorpusObj, "raw", fileid);
+                public string Raw(string fileid) => Py.CallMethod(CorpusObj, "raw", fileid);
 
                 public virtual NltkResultListTupleStringString TaggedWords(string fileid = null)
                 {
                     List<Tuple<string, string>> result = new List<Tuple<string, string>>();
 
-                    var taggedWords = py.CallMethod(CorpusObj, "tagged_words", fileid);
+                    var taggedWords = Py.CallMethod(CorpusObj, "tagged_words", fileid);
                     foreach (var tw in taggedWords)
                     {
                         var wordTag = new Tuple<string, string>(tw[0], tw[1]);
@@ -182,6 +182,11 @@ namespace NltkNet
             public class Timit : BaseCorpus
             {
                 public Timit() : base("timit") { }
+            }
+
+            public class Names : BaseCorpus
+            {
+                public Names() : base("names") { }
             }
         }
     }

@@ -9,7 +9,6 @@ using System.Threading.Tasks;
 namespace NltkNet
 {
     public static partial class Nltk
-    {
-        
+    {        
     }
 }

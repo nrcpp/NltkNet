@@ -8,21 +8,19 @@ namespace NltkNet
 {
     public static partial class Nltk
     {
-        private static PythonWrapper py;
+        public static PythonWrapper Py { get; private set; }
 
         public static void Init(List<string> libsPaths)
         {
-            py = new PythonWrapper();
-            py.AddLibPaths(libsPaths);
-            py.ImportModule("nltk");
-            py.SetDefaultModule("nltk");            
+            Py = new PythonWrapper();
+            Py.AddLibPaths(libsPaths);
+            Py.ImportModule("nltk");
+            Py.SetDefaultModule("nltk");            
         }
 
-        public static dynamic Call(string funcName, params dynamic[] arguments) => py.CallModuleFunction(funcName, arguments);
-        public static T Call<T>(string funcName, params dynamic[] arguments) => py.CallModuleFunction<T>(funcName, arguments);
-        public static List<T> CallGetList<T>(string funcName, params dynamic[] arguments) => 
-            py.CallModuleFunction<IList<object>>(funcName, arguments).Cast<T>().ToList();
+        public static dynamic Call(string funcName, params dynamic[] arguments) => Py.CallModuleFunction(funcName, arguments);
+        public static T Call<T>(string funcName, params dynamic[] arguments) => Py.CallModuleFunction<T>(funcName, arguments);        
 
-        public static dynamic CreateNltkObject(string className, params dynamic[] arguments) => py.CallModuleFunction(className, arguments);
+        public static dynamic CreateNltkObject(string className, params dynamic[] arguments) => Py.CallModuleFunction(className, arguments);
     }
 }

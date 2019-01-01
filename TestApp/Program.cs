@@ -16,7 +16,7 @@ namespace TestApp
         {
             var corpus = new Nltk.Corpus.Inaugural();
 
-            // example of using Nltk
+            // example of using NltkResult class
             var fileidsResult = corpus.FileIds();
 
             List<string> fileidsNet = fileidsResult.AsNet;                          // Get .NET List<string>
@@ -112,6 +112,8 @@ namespace TestApp
             TestTokenize();
             TestProbability();
             TestStem();
+
+            //Workarounds.TestPurePython();
         }
     }
 }

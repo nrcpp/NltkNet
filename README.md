@@ -1,6 +1,6 @@
 # NltkNet
 
-C# wrapper for the NLTK library ([https://nltk.org](https://nltk.org))
+[![Build Status](https://travis-ci.com/nrcpp/NltkNet.svg?branch=master)](https://travis-ci.com/nrcpp/NltkNet)
 
 - [Nuget package](https://www.nuget.org/packages/NltkNet/)
 
@@ -91,11 +91,12 @@ namespace TestApp
 
 **More practical samples**
 ```C#
-using NltkNet;
 using System;
 using System.Collections.Generic;
+using System.Dynamic;
 using System.IO;
 using System.Linq;
+using NltkNet;
 
 namespace TestApp
 {
@@ -103,21 +104,53 @@ namespace TestApp
     {
         static string text = "This IronPython script works fine when I run it by itself.";
 
+        private static void TestNltkResultClass()
+        {
+            var corpus = new Nltk.Corpus.Inaugural();
+
+            // example of using NltkResult class
+            var fileidsResult = corpus.FileIds();
+
+            // Get .NET List<string>
+            List<string> fileidsNet = fileidsResult.AsNet;                          
+            
+            // Get IronPython.Runtime.List
+            IronPython.Runtime.List fileidsPython = fileidsResult.AsPython;         
+            
+            // Cast to Dynamic to access object fields in Python-like style
+            dynamic fileids = fileidsResult;                                        
+
+            // using DynamicObject
+            Console.WriteLine(fileids[0]);
+            Console.WriteLine(fileids.__len__());
+
+            // access sentences (list of list of strings)
+            var sentencesResult = corpus.Sents();
+            dynamic sentences = sentencesResult;
+
+           // Manipulating with Python object: first word in first sentense
+            Console.WriteLine(sentences[0][0]);        
+            List<List<string>> netSentences = sentencesResult.AsNet;
+
+            Console.WriteLine(netSentences[0][0]);              // the same with .NET object
+            Console.WriteLine(netSentences.First().First());     // using LINQ
+        }
+
         static void TestTokenize()
         {            
-            List<Tuple<int, int>> tuples = Nltk.Tokenize.Util.RegexpSpanTokenize(text, "\\s");
-            var list = Nltk.Tokenize.SentTokenize(text);
-            if (list != null)
-                foreach (var item in list)
-                    Console.Write(item + "\r\n");
+            var tuples = Nltk.Tokenize.Util.RegexpSpanTokenize(text, "\\s");
+
+            var list = Nltk.Tokenize.SentTokenize(text).AsNet;            
+            foreach (var item in list)
+                Console.Write(item + ", ");
         }
 
         static void TestProbability()
         {
             var words = Nltk.Tokenize.WordTokenize(text);
-            var fd = Nltk.Probability.FreqDist.Create(words);
+            var fd = Nltk.Probability.FreqDist.Create(words.AsPython);
 
-            var result = fd.MostCommon(null);
+            var result = fd.MostCommon(null).AsNet;
             foreach (var item in result)
                 Console.WriteLine(item.Key + ": " + item.Value);
         }
@@ -139,22 +172,29 @@ namespace TestApp
         {
             // NOTE: brown corpus have to be installed. By default to %appdata%\nltk_data\corpora\brown
             // See https://github.com/nrcpp/NltkNet/blob/master/NltkNet/Nltk/Nltk.Corpus.cs for more corpora
-            var corpus = new Nltk.Corpus.Brown();       
-            var fileids = corpus.FileIds();
-            var words = corpus.Words(fileids.First());
-            var sentences = corpus.Sents(fileids.First());
-            var paragraphs = corpus.Paras(fileids.First());
-            string text = corpus.Raw(fileids.First());
-            var taggedWords = corpus.TaggedWords(fileids.First());
+            var corpus = new Nltk.Corpus.Brown();
+            
+            var fileidsResult = corpus.FileIds();
+            List<string> fileidsNet = fileidsResult.AsNet;
+            dynamic fileids = fileidsResult;
+
+            Console.WriteLine(fileids[0]);
+
+            var words = corpus.Words(fileidsNet.First());
+            var sentences = corpus.Sents(fileidsNet.First());
+            var paragraphs = corpus.Paras(fileidsNet.First());
+            string text = corpus.Raw(fileidsNet.First());
+            var taggedWords = corpus.TaggedWords(fileidsNet.First());
 
             var stopWordsCorpus = new Nltk.Corpus.StopWords();
             var stopWords = stopWordsCorpus.Words(null);
 
-            // Process data returned from NLTK library...
+            // Process given 
             Console.WriteLine("Stopwords: \r\n" + string.Join(", ", stopWords));
             Console.WriteLine("Words from Brown corpus: \r\n" + string.Join(", ", words));
         }
 
+        
         static void Main(string[] args)
         {
             Nltk.Init(new List<string>
@@ -163,21 +203,54 @@ namespace TestApp
                 @"C:\IronPython27\Lib\site-packages",
             });
 
+            TestNltkResultClass();
+            TestCorpus();
             TestTokenize();
             TestProbability();
             TestStem();
-            TestCorpus();
         }
     }
 }
 
 ```
 
-## What's next?
+## What if there is no required NLTK feature in wrapper?
 
 **NltkNet** wrapper may be considered as a starting point for learning NLP using C# and Visual Studio. Current version of NltkNet does not cover lots of features of original NLTK library written in Python. You may use workarounds to execute Python code that didn't wrapped yet.
-Take a look at methods `NltkNet.Call` and `NltkNet.CreateNltkObject`.
-Also you could execute any of Python code using `PythonWrapper.LoadFromCode` method.
+First is direct access to **Nltk.Py** property which provides you ability to execute any IronPython script, including wrappers arround method calls and creating objects. Consider the below example that illustrates possibility of using `unwrapped` features of NLTK:
+```
+using NltkNet;
+using System;
+using System.Collections.Generic;
+namespace TestApp
+{
+    class Workarounds
+    {
+        public static void TestPurePython()
+        {
+            // Initialization required
+            Nltk.Init(new List<string>
+            {
+                @"C:\IronPython27\Lib",
+                @"C:\IronPython27\Lib\site-packages",
+            });
 
-Documentation will be extended with more examples of using NLTK library features that didn't wrapped yet.
+
+            // Imports NLTK corpus module
+            Nltk.Py.ImportModule("nltk.corpus");
+
+            // Import 'names' object to access corpus content
+            Nltk.Py.ExecuteScript("from nltk.corpus import names");
+
+            // Get object by name
+            dynamic namesObj = Nltk.Py.GetObject("names");
+
+            // Call object's method 'names.words()'
+            dynamic namesList = Nltk.Py.CallMethod(namesObj, "words");
+            
+            foreach (var name in namesList)
+                Console.Write(name + ", ");
+        }
+    }
+}
 
