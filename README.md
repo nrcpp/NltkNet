@@ -220,7 +220,7 @@ namespace TestApp
 
 **NltkNet** wrapper may be considered as a starting point for learning NLP using C# and Visual Studio. Current version of NltkNet does not cover lots of features of original NLTK library written in Python. You may use workarounds to execute Python code that didn't wrapped yet.
 First is direct access to **Nltk.Py** property which provides you ability to execute any IronPython script, including wrappers arround method calls and creating objects. Consider the below example that illustrates possibility of using `unwrapped` features of NLTK:
-```
+```C#
 using NltkNet;
 using System;
 using System.Collections.Generic;
