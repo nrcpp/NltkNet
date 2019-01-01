@@ -1,6 +1,8 @@
-# NltkNet
+# NltkNet   ![NltkNet Logo](https://i.ibb.co/CtfNJy6/icon.png)
+### C# wrapper for NLTK library ([https://nltk.org](https://nltk.org))
 
 [![Build Status](https://travis-ci.com/nrcpp/NltkNet.svg?branch=master)](https://travis-ci.com/nrcpp/NltkNet)
+
 
 - [Nuget package](https://www.nuget.org/packages/NltkNet/)
 
