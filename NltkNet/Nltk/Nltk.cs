@@ -15,12 +15,31 @@ namespace NltkNet
             Py = new PythonWrapper();
             Py.AddLibPaths(libsPaths);
             Py.ImportModule("nltk");
-            Py.SetDefaultModule("nltk");            
+            Py.SetDefaultModule("nltk");
+
+            // we need to set os platform to 'win', instead of 'cli' to make it work such things as 'nltk.pos_tag(words)'
+            Py.ImportModule("sys");
+            Py.ExecuteScript("sys.platform = 'win32'");            
         }
+
 
         public static dynamic Call(string funcName, params dynamic[] arguments) => Py.CallModuleFunction(funcName, arguments);
         public static T Call<T>(string funcName, params dynamic[] arguments) => Py.CallModuleFunction<T>(funcName, arguments);        
 
         public static dynamic CreateNltkObject(string className, params dynamic[] arguments) => Py.CallModuleFunction(className, arguments);
+
+        #region NLTK namespace methods
+
+        public static NltkResultListTupleStringString PosTag(List<string> words)
+        {
+            var taggedWords = Py.CallModuleFunction("nltk", "pos_tag", words);
+
+            return new NltkResultListTupleStringString()
+            {
+                AsPython = taggedWords
+            };
+        }
+
+        #endregion        
     }
 }

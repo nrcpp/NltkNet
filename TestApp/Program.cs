@@ -76,8 +76,17 @@ namespace TestApp
 
 
 
-       
-        
+        static void TestPosTagger()
+        {
+            var words = Nltk.Tokenize.WordTokenize(text);
+            var taggedWords = Nltk.PosTag(words.AsNet);
+
+            //StandardLibrary.Print(taggedWords.AsPython);
+            StandardLibrary.Print(taggedWords.AsPython);
+            Console.WriteLine("Length = " + StandardLibrary.Len(taggedWords.AsPython));
+        }
+
+
         static void Main(string[] args)
         {
             Nltk.Init(new List<string>
@@ -87,7 +96,9 @@ namespace TestApp
             });
 
 
-            TestCorpus.TestBrown();
+            //TestCorpus.TestBrown();
+
+            TestPosTagger();
 
             //TestNltkResultClass();            
             //TestTokenize();

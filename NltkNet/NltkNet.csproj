@@ -80,6 +80,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="PythonWrapper.cs" />
     <Compile Include="Helpers\BaseClasses.cs" />
+    <Compile Include="Python\StandardLibrary.cs" />
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>
