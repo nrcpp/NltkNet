@@ -11,12 +11,12 @@ namespace NltkNet
         {          
             public class PorterStemmer : NltkClass<PorterStemmer>
             {                                
-                public string Stem(string word) => PyObject.stem(word);
+                public string Stem(string word) => AsPython.stem(word);
             }
 
             public class WordNetLemmatizer : NltkClass<WordNetLemmatizer>
             {
-                public string Lemmatize(string word) => PyObject.lemmatize(word);
+                public string Lemmatize(string word) => AsPython.lemmatize(word);
             }
         }
     }

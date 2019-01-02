@@ -84,6 +84,10 @@ namespace TestApp
             //StandardLibrary.Print(taggedWords.AsPython);
             StandardLibrary.Print(taggedWords.AsPython);
             Console.WriteLine("Length = " + StandardLibrary.Len(taggedWords.AsPython));
+
+            var myCorpus = new Nltk.Text(words.AsPython);
+
+            StandardLibrary.Print(myCorpus.AsPython);
         }
 
 

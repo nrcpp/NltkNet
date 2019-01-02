@@ -40,6 +40,14 @@ namespace NltkNet
             };
         }
 
+
+        public class Text : NltkClass<Text>
+        {
+            public Text(object pyObject) : base(pyObject)
+            {
+            }
+        }
+
         #endregion        
     }
 }

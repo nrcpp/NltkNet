@@ -33,11 +33,11 @@ namespace NltkNet
 
         public class NltkClass<T>
         {
-            public dynamic PyObject { get; protected set; }
+            public dynamic AsPython { get; protected set; }
 
             protected NltkClass(params object[] args)
             {
-                PyObject = CreateNltkObject(typeof(T).Name, args);
+                AsPython = CreateNltkObject(typeof(T).Name, args);
             }
         }
     }
