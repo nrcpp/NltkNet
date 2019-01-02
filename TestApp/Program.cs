@@ -9,7 +9,7 @@ namespace TestApp
 {
     class Program
     {
-        static string text = "This IronPython script works fine when I run it by itself.";
+        static string text = "Hello colleague! Thanks for using NltkNet library. Wish you no bugs there!";
 
 
         private static void TestNltkResultClass()
@@ -41,7 +41,11 @@ namespace TestApp
 
         static void TestTokenize()
         {            
-            var tuples = Nltk.Tokenize.Util.RegexpSpanTokenize(text, "\\s");
+            var tuples = Nltk.Tokenize.Util.RegexpSpanTokenize(text, "\\s").AsNet;
+
+            Console.WriteLine("Nltk.Tokenize.Util.RegexpSpanTokenize:");
+            foreach (var item in tuples)
+                Console.Write($"({item.Item1}, {item.Item2}), ");
 
             var list = Nltk.Tokenize.SentTokenize(text).AsNet;            
             foreach (var item in list)
@@ -94,8 +98,8 @@ namespace TestApp
             var stopWords = stopWordsCorpus.Words(null);
 
             // Process given 
-            Console.WriteLine("Stopwords: \r\n" + string.Join(", ", stopWords));
-            Console.WriteLine("Words from Brown corpus: \r\n" + string.Join(", ", words));
+            Console.WriteLine("Stopwords: \r\n" + string.Join(", ", stopWords.AsNet));
+            Console.WriteLine("Words from Brown corpus: \r\n" + string.Join(", ", words.AsNet));
         }
 
         
@@ -107,11 +111,11 @@ namespace TestApp
                 @"C:\IronPython27\Lib\site-packages",
             });
 
-            TestNltkResultClass();
-            TestCorpus();
+            //TestNltkResultClass();
+            //TestCorpus();
             TestTokenize();
-            TestProbability();
-            TestStem();
+            //TestProbability();
+            //TestStem();
 
             //Workarounds.TestPurePython();
         }

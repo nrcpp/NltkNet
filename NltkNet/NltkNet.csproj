@@ -67,7 +67,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Helpers\NltkResultExtensions.cs" />
+    <Compile Include="Helpers\NltkResult.cs" />
     <Compile Include="Helpers\Extensions.cs" />
     <Compile Include="Nltk\Nltk.cs" />
     <Compile Include="Nltk\Nltk.Probability.cs" />

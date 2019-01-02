@@ -20,11 +20,9 @@ namespace NltkNet
                 public NltkResultDictionaryStringInt MostCommon(int? number)
                 {
                     var dict = PyObject.most_common(number);
-                    var result = ToDictionary<string, int>(dict);
-
+                    
                     return new NltkResultDictionaryStringInt()
-                    {
-                        AsNet = result,
+                    {                        
                         AsPython = dict
                     };
                 }

@@ -44,14 +44,9 @@ namespace NltkNet
                 {
                     var words = Py.CallMethod(CorpusObj, "fileids");
 
-                    var result = new List<string>();
-                    foreach (var fi in words)
-                        result.Add((string)fi);
-
                     return new NltkResultListString()
-                    {
-                        AsNet = result,
-                        AsPython = words,
+                    {                        
+                        AsPython = words,                     
                     };
                 }
 
@@ -59,13 +54,8 @@ namespace NltkNet
                 {
                     var words = Py.CallMethod(CorpusObj, "words", fileid);
 
-                    var result = new List<string>();
-                    foreach (var w in words)
-                        result.Add((string)w);
-
                     return new NltkResultListStringDynamic()
-                    {
-                        AsNet = result,
+                    {                        
                         AsPython = words,
                     };
                 }
@@ -75,49 +65,22 @@ namespace NltkNet
                 public NltkResultListListString Sents(string fileid = null)
                 {
                     var sents = Py.CallMethod(CorpusObj, "sents", fileid);
-
-                    var result = new List<List<string>>();
-                    foreach (var s in sents)
-                    {
-                        var words = new List<string>();
-                        foreach (var w in s)
-                            words.Add((string)w);
-
-                        result.Add(words);
-                    }
-
+                   
                     return new NltkResultListListString()
-                    {
-                        AsNet = result,
+                    {                        
                         AsPython = (dynamic)sents
                     };
                 }
+
 
                 // paras() : list of(list of (list of str))
                 public NltkResultListListListString Paras(string fileid = null)
                 {
                     var paras = Py.CallMethod(CorpusObj, "paras", fileid);
-
-                    var result = new List<List<List<string>>>();
-                    foreach (var p in paras)
-                    {
-                        var sents = new List<List<string>>();
-                        foreach (var s in p)
-                        {
-                            var words = new List<string>();
-                            foreach (var w in s)
-                                words.Add((string)w);
-
-                            sents.Add(words);
-                        }
-
-                        result.Add(sents);
-                    }
-
+                    
                     return new NltkResultListListListString()
                     {
-                        AsPython = paras,
-                        AsNet = result
+                        AsPython = paras,                        
                     };
                 }
 

@@ -34,11 +34,9 @@ namespace NltkNet
                 public static NltkResultListTupleIntInt RegexpSpanTokenize(string text, string regexp)
                 {
                     PythonGenerator generator = Call("regexp_span_tokenize", text, regexp);
-                    var result = ToListTuple<int,int>(generator);
-
+                    
                     return new NltkResultListTupleIntInt()
-                    {
-                        AsNet = result,
+                    {                    
                         AsPython = generator,
                     };
                 }

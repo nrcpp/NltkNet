@@ -1,4 +1,5 @@
-﻿using IronPython.Runtime;
+﻿using IronPython.Hosting;
+using IronPython.Runtime;
 using System;
 using System.Collections.Generic;
 using System.Dynamic;
@@ -20,7 +21,7 @@ namespace NltkNet
 
         #region From Python To .NET types converters
 
-        public static Dictionary<T1, T2> ToDictionary<T1, T2>(IronPython.Runtime.List list)
+        public static Dictionary<T1, T2> ToNetDictionary<T1, T2>(IronPython.Runtime.List list)
         {
             Dictionary<T1, T2> result = new Dictionary<T1, T2>();
             foreach (PythonTuple item in list)
@@ -31,8 +32,10 @@ namespace NltkNet
             return result;
         }
 
-
-        public static List<T> ToList<T>(this PythonGenerator generatorObj, Func<object, T> converter)
+        public static List<T> ToNetList<T>(this IronPython.Runtime.List list)
+            => list.Cast<T>().ToList(); 
+        
+        public static List<T> ToNetList<T>(this PythonGenerator generatorObj, Func<object, T> converter)
         {
             var result = new List<T>();
             foreach (T item in generatorObj)
@@ -41,7 +44,7 @@ namespace NltkNet
         }
 
         
-        public static List<Tuple<T1, T2>> ToListTuple<T1, T2>(this PythonGenerator generatorObj)
+        public static List<Tuple<T1, T2>> ToNetListTuple<T1, T2>(this PythonGenerator generatorObj)
         {
             List<Tuple<T1, T2>> result = new List<Tuple<T1, T2>>();
             foreach (PythonTuple item in generatorObj)
@@ -52,14 +55,14 @@ namespace NltkNet
             return result;
         }
 
-        public static List<Tuple<int, int>> ToListTupleIntInt(dynamic generatorObj) => ToListTuple<int, int>(generatorObj);
+        public static List<Tuple<int, int>> ToNetListTupleIntInt(dynamic generatorObj) => ToNetListTuple<int, int>(generatorObj);
 
         #endregion
 
 
         #region from C# to Python extensions
 
-        public static IronPython.Runtime.List ToPythonList<T>(this IEnumerable<T> list)
+        public static IronPython.Runtime.List ToIronPythonList<T>(this IEnumerable<T> list)
         {
             var result = new IronPython.Runtime.List();
 
