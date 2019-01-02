@@ -13,11 +13,9 @@ namespace NltkNet
             private static NltkResultListString TokenizeCall(string funcName, string text)
             {
                 IronPython.Runtime.List list = Call(funcName, text);
-                var result = list.Cast<string>().ToList();
-
+                
                 return new NltkResultListString()
-                {
-                    AsNet = result,
+                {                    
                     AsPython = list,
                 };
             }

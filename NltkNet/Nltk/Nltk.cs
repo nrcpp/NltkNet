@@ -46,6 +46,17 @@ namespace NltkNet
             public Text(object pyObject) : base(pyObject)
             {
             }
+
+            public NltkResult<string> Similar(string word)
+            {
+                var result = Py.CallMethod(PyObject, "similar", word);
+
+                return new NltkResult<string>()
+                {
+                    AsPython = result ?? new System.Dynamic.ExpandoObject(),
+                    AsNet = (string)result
+                };
+            }
         }
 
         #endregion        

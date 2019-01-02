@@ -91,6 +91,13 @@ namespace NltkNet
 
         public class NltkResult<NetType> : NltkResult<NetType, dynamic> { }
 
+        public class NltkResult : NltkResult<dynamic, dynamic> { }
+
+        public class NltkResultTupleStrStr : NltkResult<(string, string), dynamic>
+        {
+            public override Func<dynamic, (string, string)> ToNetConverter => tuple => ValueTuple.Create((string)tuple[0], (string)tuple[1]);
+        }
+
         public class NltkResultListString : NltkResult<List<string>, IronPython.Runtime.List>
         {
             public override Func<List, List<string>> ToNetConverter => list => list.Cast<string>().ToList();
