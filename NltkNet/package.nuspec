@@ -4,7 +4,7 @@
     <!--*-->
     <id>NltkNet</id>
     <!--*-->
-    <version>1.0.9</version>
+    <version>1.0.10</version>
     <title>NltkNet</title>
     <!--*-->
     <authors>Denis Kazakov</authors>
@@ -16,11 +16,15 @@
     <!--*-->
     <description>NLTK python library wrapper for .NET</description>
     <!--*-->
-    <releaseNotes>NLTK library wrapper for .NET 4.5 and higher. Original project was written using Python. See https://www.nltk.org/ for details.</releaseNotes>
+    <releaseNotes>NLTK library wrapper for .NET 4.5 and higher. Original project was written using Python. See https://www.nltk.org/ for details.
+
+New:
+- Lazy pattern for NltkResult.AsNet objects around all library</releaseNotes>
     <copyright>Copyright ©  2018</copyright>
     <tags>nltk,nlp,,parser, tokenizer, categorizer, POS, NER, chunker,IronPython</tags>
     <dependencies>
       <dependency id="IronPython" version="2.7.9" />
+      <dependency id="System.ValueTuple" version="4.3.0" />
     </dependencies>
   </metadata>
 </package>

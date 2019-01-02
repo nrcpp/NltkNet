@@ -176,6 +176,32 @@ namespace NltkNet
             }
         }
 
+        // list of list of tuple str str
+        public class NltkResultListListTupleStringString : NltkResult<List<List<(string, string)>>, dynamic>
+        {
+            public override Func<dynamic, List<List<(string, string)>>> ToNetConverter =>
+                    tupleStrStr => Convert(tupleStrStr);
+
+            static List<List<(string, string)>> Convert(dynamic listOfListOftupleStrStr)
+            {
+                var result = new List<List<(string, string)>>();
+
+                foreach (var listOfList in listOfListOftupleStrStr)
+                {
+                    var taggedSent = new List<(string, string)>();
+                    foreach (var sent in listOfList)
+                    {
+                        taggedSent.Add((sent[0], sent[1]));
+                    }
+
+                    result.Add(taggedSent);
+                }
+
+
+                return result;
+            }
+        }
+
 
         public class NltkResultDictionaryStringInt : NltkResult<Dictionary<string, int>, dynamic>
         {

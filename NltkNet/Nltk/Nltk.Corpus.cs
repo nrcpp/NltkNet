@@ -87,19 +87,11 @@ namespace NltkNet
                 public string Raw(string fileid) => Py.CallMethod(CorpusObj, "raw", fileid);
 
                 public virtual NltkResultListTupleStringString TaggedWords(string fileid = null)
-                {
-                    List<Tuple<string, string>> result = new List<Tuple<string, string>>();
-
+                {                    
                     var taggedWords = Py.CallMethod(CorpusObj, "tagged_words", fileid);
-                    foreach (var tw in taggedWords)
-                    {
-                        var wordTag = new Tuple<string, string>(tw[0], tw[1]);
-                        result.Add(wordTag);
-                    }
-
+                    
                     return new NltkResultListTupleStringString()
-                    {
-                        AsNet = result,
+                    {                    
                         AsPython = taggedWords,
                     };
                 }
@@ -107,7 +99,18 @@ namespace NltkNet
 
             public class Brown : BaseCorpus
             {
-                public Brown() : base("brown") { }                
+                public Brown() : base("brown") { }
+
+
+                public NltkResultListListTupleStringString TaggedSents(List<string> fileids = null, string categories = null, string tagset = null)
+                {                    
+                    var taggedSents = Py.CallMethod(CorpusObj, "tagged_sents", fileids, categories);
+                    
+                    return new NltkResultListListTupleStringString()
+                    {                 
+                        AsPython = taggedSents,
+                    };
+                }
             }
 
             public class Gutenberg : BaseCorpus

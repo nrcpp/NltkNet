@@ -76,32 +76,7 @@ namespace TestApp
 
 
 
-        private static void TestCorpus()
-        {
-            // NOTE: brown corpus have to be installed. By default to %appdata%\nltk_data\corpora\brown
-            // See https://github.com/nrcpp/NltkNet/blob/master/NltkNet/Nltk/Nltk.Corpus.cs for more corpora
-            var corpus = new Nltk.Corpus.Brown();
-            
-            var fileidsResult = corpus.FileIds();
-            List<string> fileidsNet = fileidsResult.AsNet;
-            dynamic fileids = fileidsResult;
-
-            Console.WriteLine(fileids[0]);
-
-            var words = corpus.Words(fileidsNet.First());
-            var sentences = corpus.Sents(fileidsNet.First());
-            var paragraphs = corpus.Paras(fileidsNet.First());
-            string text = corpus.Raw(fileidsNet.First());
-            var taggedWords = corpus.TaggedWords(fileidsNet.First());
-
-            var stopWordsCorpus = new Nltk.Corpus.StopWords();
-            var stopWords = stopWordsCorpus.Words(null);
-
-            // Process given 
-            Console.WriteLine("Stopwords: \r\n" + string.Join(", ", stopWords.AsNet));
-            Console.WriteLine("Words from Brown corpus: \r\n" + string.Join(", ", words.AsNet));
-        }
-
+       
         
         static void Main(string[] args)
         {
@@ -111,9 +86,11 @@ namespace TestApp
                 @"C:\IronPython27\Lib\site-packages",
             });
 
-            //TestNltkResultClass();
-            //TestCorpus();
-            TestTokenize();
+
+            TestCorpus.TestBrown();
+
+            //TestNltkResultClass();            
+            //TestTokenize();
             //TestProbability();
             //TestStem();
 

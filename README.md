@@ -13,6 +13,7 @@
 ## **Dependencies**
 
 - [IronPython](https://www.nuget.org/packages/IronPython) - 2.7.9 or later (Includes [DynamicLanguageRuntime](https://www.nuget.org/packages/DynamicLanguageRuntime/))
+- [System.ValueTuple](https://www.nuget.org/packages/System.ValueTuple) - 4.3.0 
 
 ## **Pre-Requirements**
 
