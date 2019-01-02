@@ -79,15 +79,18 @@ namespace TestApp
         static void TestPosTagger()
         {
             var words = Nltk.Tokenize.WordTokenize(text);
-            var taggedWords = Nltk.PosTag(words.AsNet);
+            //var taggedWords = Nltk.PosTag(words.AsNet);
 
             //StandardLibrary.Print(taggedWords.AsPython);
-            StandardLibrary.Print(taggedWords.AsPython);
-            Console.WriteLine("Length = " + StandardLibrary.Len(taggedWords.AsPython));
+            //StandardLibrary.Print(taggedWords.AsPython);
+            //Console.WriteLine("Length = " + StandardLibrary.Len(taggedWords.AsPython));
 
-            var myCorpus = new Nltk.Text(words.AsPython);
+            //var myText = new Nltk.Text(words.AsPython);
+            //var r = myText.Similar("Denis");
+            //StandardLibrary.Print(r.AsPython);
 
-            StandardLibrary.Print(myCorpus.AsPython);
+            var tuple = Nltk.Tag.Str2Tuple("fly/NN").AsNet;
+            Console.WriteLine(tuple.Item1 + " " + tuple.Item2);
         }
 
 
