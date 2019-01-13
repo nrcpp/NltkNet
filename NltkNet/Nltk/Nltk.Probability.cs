@@ -27,25 +27,59 @@ namespace NltkNet
             }
 
 
-            public class CondFreqDist : NltkClass<FreqDist>
+            public class ConditionalFreqDist : NltkClass<ConditionalFreqDist>
             {
-                public CondFreqDist(object condition = null) : base(condition)
+                public ConditionalFreqDist() : base()
                 {
+                }
+
+                public ConditionalFreqDist(string pythonExpresion) 
+                {
+                    if (pythonExpresion != null)
+                    {
+                        dynamic expr = Py.ExecuteScript(pythonExpresion);
+                        PyObject = CreateNltkObject(nameof(ConditionalFreqDist), expr);
+                    }
+                    
                 }
 
                 int N() => PyObject.N();
 
-                public dynamic this[object conditionValue]
+                public dynamic Hapaxes() => PyObject.hapaxes();
+
+                public void AddCondition(object conditionKey, string word)
                 {
-                    get => PyObject[conditionValue];
-                    set => PyObject[conditionValue] = value;
+                    var pyCondition = PyObject[conditionKey];
+
+                    pyCondition[word] += 1;                    
                 }
 
-                public NltkResultDictionaryStringInt MostCommon(int? number = null)
+                public dynamic this[object conditionKey]
+                {
+                    get => PyObject[conditionKey];
+                }
+
+                //{
+                //    get
+                //    {
+                //        var condition = PyObject[word];
+                //        if (condition == null || condition == 0)
+                //            condition = PyObject[word] = new Dictionary<object, object>();
+
+                //        return condition;
+                //    }
+
+                //    set
+                //    {
+                //        AddCondition((string)word, value);
+                //    }
+                //}
+
+                public NltkResult MostCommon(int? number = null)
                 {
                     var dict = PyObject.most_common(number);
 
-                    return new NltkResultDictionaryStringInt()
+                    return new NltkResult()
                     {
                         AsPython = dict
                     };

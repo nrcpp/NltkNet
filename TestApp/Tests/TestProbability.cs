@@ -34,17 +34,17 @@ namespace TestApp
         static void TestCondFreqDist()
         {
             var words = Nltk.Tokenize.WordTokenize(text);
-            var cfdist = new Nltk.Probability.CondFreqDist();
+            var cfdist = new Nltk.Probability.ConditionalFreqDist();
 
             foreach (string word in words.AsNet)
             {
                 var condition = word.Length;
-                cfdist[condition][word] += 1;
+                cfdist[condition][word] += 1;                
             }
 
-            var result = cfdist.MostCommon().AsNet;
-            foreach (var item in result)
-                Console.WriteLine(item.Key + ": " + item.Value);
+            foreach (var condition in cfdist.PyObject)
+                foreach (var word in cfdist[condition])
+                    BuiltIns.Print("Cond. frequency of " + word + " " + cfdist[condition].freq(word) + " [condition is word length =" + condition + "]");
         }
     }
 }

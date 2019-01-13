@@ -16,7 +16,7 @@ namespace NltkNet
                                   "def __str__(obj):\r\n\treturn str(obj)\r\n" +
                                   "def __set__(obj):\r\n\treturn set(obj)\r\n" +
                                   "def __list__(obj):\r\n\treturn list(obj)\r\n" +
-                                  "def __dict__(obj):\r\n\treturn dict(obj)\r\n" +
+                                  "def __dict__(*obj):\r\n\treturn dict(*obj)\r\n" +
                                   "def __sorted__(obj):\r\n\treturn sorted(obj)\r\n" +
                                   "def __range__(p1, p2, p3):\r\n\treturn range(start=p1, stop=p2, step=p3)\r\n" +
                                   "def __zip__(*obj):\r\n\treturn zip(*obj)\r\n" +
@@ -32,6 +32,7 @@ namespace NltkNet
         public static dynamic Set(dynamic pyObj) => Nltk.Py.CallFunction("__set__", pyObj);
         public static dynamic List(dynamic pyObj) => Nltk.Py.CallFunction("__list__", pyObj);
         public static dynamic Dict(dynamic pyObj) => Nltk.Py.CallFunction("__dict__", pyObj);
+        public static dynamic Dict() => Nltk.Py.CallFunction("__dict__");
         public static dynamic Sorted(dynamic pyObj) => Nltk.Py.CallFunction("__sorted__", pyObj);
         public static dynamic Range(int start, int stop, int step = 1) => Nltk.Py.CallFunction("__range__", start, stop, step);
         public static dynamic Zip(params dynamic[] objects) =>  Nltk.Py.CallFunction("__zip__", objects);

@@ -221,6 +221,5 @@ namespace NltkNet
             public override Func<dynamic, List<Tuple<int, int>>> ToNetConverter =>
                 listOftupleIntInt => Nltk.ToNetListTuple<int, int>(listOftupleIntInt); 
         }
-
     }
 }
