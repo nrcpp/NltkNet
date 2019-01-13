@@ -105,7 +105,9 @@ namespace TestApp
 
             //TestCorpus.TestBrown();
 
-            TestPosTagger();
+            //TestPosTagger();
+            StandardLibrary.InternalTest();
+            Console.ReadLine();
 
             //TestNltkResultClass();            
             //TestTokenize();
