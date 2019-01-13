@@ -18,7 +18,10 @@ namespace NltkNet
                                   "def __list__(obj):\r\n\treturn list(obj)\r\n" +
                                   "def __sorted__(obj):\r\n\treturn sorted(obj)\r\n" +
                                   "def __range__(p1, p2, p3):\r\n\treturn range(start=p1, stop=p2, step=p3)\r\n" +
-                                  "def __zip__(*obj):\r\n\treturn zip(*obj)\r\n"
+                                  "def __zip__(*obj):\r\n\treturn zip(*obj)\r\n" +
+                                  "def __importfunc__(name, globals, locals, fromlist, level):\r\n\treturn __import__(name, globals, locals, fromlist, level)\r\n" +
+                                  "def __globals__():\r\n\treturn globals()\r\n" +
+                                  "def __locals__():\r\n\treturn locals()\r\n"
                                   );
         }
 
@@ -29,14 +32,24 @@ namespace NltkNet
         public static dynamic List(dynamic pyObj) => Nltk.Py.CallFunction("__list__", pyObj);
         public static dynamic Sorted(dynamic pyObj) => Nltk.Py.CallFunction("__sorted__", pyObj);
         public static dynamic Range(int start, int stop, int step = 1) => Nltk.Py.CallFunction("__range__", start, stop, step);
-        public static dynamic Zip(params dynamic[] objects) =>  Nltk.Py.CallFunction("__zip__", objects);        
+        public static dynamic Zip(params dynamic[] objects) =>  Nltk.Py.CallFunction("__zip__", objects);
+        public static dynamic Import(string name, dynamic globals, dynamic locals, dynamic fromlist, int level) =>                
+            Nltk.Py.CallFunction("__importfunc__", name, globals, locals, fromlist, level);
 
+        public static dynamic ImportNames(string moduleName, params string[] fromList) => Import(moduleName, Globals(), Locals(), fromList, -1);        
+
+        public static dynamic Globals() => Nltk.Py.CallFunction("__globals__");
+        public static dynamic Locals() => Nltk.Py.CallFunction("__locals__");
+        
 
         public static void InternalTest()
         {
             var lst = new List<int>() { 1, 2, 3, 4, 5, 1, 2, 3, 4, 5 };
             //var lst2 = new List<int>() { 10, 20, 30, 40, 5, 1, 2, 3, 4, 5 };
             var lst2 = new List<string>() { "A", "B", "C" };
+
+            var brownCorpus = ImportNames("nltk.corpus", "brown" );
+            Print(brownCorpus.brown.words());
 
             //Print("Len: " + Len(lst));
             //Print("Sorted: " + Str(Sorted(lst)));
@@ -47,7 +60,10 @@ namespace NltkNet
             //var range = Range(0, 30, 3);
             //Print("Range: " + Str(List(range)));
 
-            Print("Zip: " + Str(Zip(lst, lst2)));
+            //Print("Zip: " + Str(Zip(lst, lst2)));
+            //Print(Globals());
+            //Console.ReadLine();
+            //Print(Locals());
         }
     }
 }
