@@ -80,13 +80,14 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="PythonWrapper.cs" />
     <Compile Include="Helpers\BaseClasses.cs" />
-    <Compile Include="Python\StandardLibrary.cs" />
+    <Compile Include="Python\BuiltIns.cs" />
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>
     <Compile Include="Nltk\Nltk.Tag.cs" />
     <None Include="package.nuspec" />
     <None Include="packages.config" />
+    <None Include="README.md" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

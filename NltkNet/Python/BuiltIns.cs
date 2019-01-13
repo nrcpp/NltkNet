@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 
 namespace NltkNet
 {
-    public static class StandardLibrary
+    public static class BuiltIns
     {
-        static StandardLibrary()
+        static BuiltIns()
         {
             // built-in functions: print, len
             Nltk.Py.ExecuteScript("def __print__(obj):\r\n\tprint obj\r\n" +
@@ -47,15 +47,11 @@ namespace NltkNet
 
         public static void InternalTest()
         {
-            var lst = new List<int>() { 1, 2, 3, 4, 5, 1, 2, 3, 4, 5 };
-            //var lst2 = new List<int>() { 10, 20, 30, 40, 5, 1, 2, 3, 4, 5 };
-            var lst2 = new List<string>() { "A", "B", "C" };
-
-
+            
             // Test import corpuses
             dynamic corpuses = ImportNames("nltk.corpus", "brown", "wordnet" );
             dynamic brown = corpuses.brown;
-            dynamic wordnet = corpuses.wordnet; 
+            dynamic wordnet = corpuses.wordnet;
 
             Print(brown.words());
 

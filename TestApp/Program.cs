@@ -55,7 +55,7 @@ namespace TestApp
         static void TestProbability()
         {
             var words = Nltk.Tokenize.WordTokenize(text);
-            var fd = Nltk.Probability.FreqDist.Create(words.AsPython);
+            var fd = new Nltk.Probability.FreqDist(words.AsPython);
 
             var result = fd.MostCommon(null).AsNet;
             foreach (var item in result)
@@ -81,13 +81,13 @@ namespace TestApp
             var words = Nltk.Tokenize.WordTokenize(text);
             //var taggedWords = Nltk.PosTag(words.AsNet);
 
-            //StandardLibrary.Print(taggedWords.AsPython);
-            //StandardLibrary.Print(taggedWords.AsPython);
-            //Console.WriteLine("Length = " + StandardLibrary.Len(taggedWords.AsPython));
+            //BuiltIn.Print(taggedWords.AsPython);
+            //BuiltIn.Print(taggedWords.AsPython);
+            //Console.WriteLine("Length = " + BuiltIn.Len(taggedWords.AsPython));
 
             //var myText = new Nltk.Text(words.AsPython);
             //var r = myText.Similar("Denis");
-            //StandardLibrary.Print(r.AsPython);
+            //BuiltIn.Print(r.AsPython);
 
             var tuple = Nltk.Tag.Str2Tuple("fly/NN").AsNet;
             Console.WriteLine(tuple.Item1 + " " + tuple.Item2);
@@ -106,7 +106,8 @@ namespace TestApp
             //TestCorpus.TestBrown();
 
             //TestPosTagger();
-            StandardLibrary.InternalTest();
+            //BuiltIns.InternalTest();
+            TestBuiltIn.OverallTest();
             
             //TestNltkResultClass();            
             //TestTokenize();
