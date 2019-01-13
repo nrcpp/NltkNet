@@ -14,15 +14,34 @@ namespace NltkNet
                 public FreqDist(object samples) : base(samples)
                 {                    
                 }
-
-                public static FreqDist Create(dynamic samples) => new FreqDist(samples);
-
+                
                 public NltkResultDictionaryStringInt MostCommon(int? number)
                 {
                     var dict = PyObject.most_common(number);
                     
                     return new NltkResultDictionaryStringInt()
                     {                        
+                        AsPython = dict
+                    };
+                }
+            }
+
+
+            public class CondFreqDist : NltkClass<FreqDist>
+            {
+                public CondFreqDist(object condition) : base(condition)
+                {
+                }
+
+                int N() => PyObject.N();
+
+
+                public NltkResultDictionaryStringInt MostCommon(int? number)
+                {
+                    var dict = PyObject.most_common(number);
+
+                    return new NltkResultDictionaryStringInt()
+                    {
                         AsPython = dict
                     };
                 }
