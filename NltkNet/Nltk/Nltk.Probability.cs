@@ -15,7 +15,7 @@ namespace NltkNet
                 {                    
                 }
                 
-                public NltkResultDictionaryStringInt MostCommon(int? number)
+                public NltkResultDictionaryStringInt MostCommon(int? number = null)
                 {
                     var dict = PyObject.most_common(number);
                     
@@ -29,14 +29,19 @@ namespace NltkNet
 
             public class CondFreqDist : NltkClass<FreqDist>
             {
-                public CondFreqDist(object condition) : base(condition)
+                public CondFreqDist(object condition = null) : base(condition)
                 {
                 }
 
                 int N() => PyObject.N();
 
+                public dynamic this[object conditionValue]
+                {
+                    get => PyObject[conditionValue];
+                    set => PyObject[conditionValue] = value;
+                }
 
-                public NltkResultDictionaryStringInt MostCommon(int? number)
+                public NltkResultDictionaryStringInt MostCommon(int? number = null)
                 {
                     var dict = PyObject.most_common(number);
 

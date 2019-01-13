@@ -52,16 +52,6 @@ namespace TestApp
                 Console.Write(item + ", ");
         }
 
-        static void TestProbability()
-        {
-            var words = Nltk.Tokenize.WordTokenize(text);
-            var fd = new Nltk.Probability.FreqDist(words.AsPython);
-
-            var result = fd.MostCommon(null).AsNet;
-            foreach (var item in result)
-                Console.WriteLine(item.Key + ": " + item.Value);
-        }
-
         static void TestStem()
         {
             var stemmer = new Nltk.Stem.PorterStemmer();
@@ -105,13 +95,12 @@ namespace TestApp
 
             //TestCorpus.TestBrown();
 
-            //TestPosTagger();
-            //BuiltIns.InternalTest();
-            TestBuiltIn.OverallTest();
-            
+            //TestPosTagger();            
+            //TestBuiltIn.OverallTest();
+
             //TestNltkResultClass();            
             //TestTokenize();
-            //TestProbability();
+            TestProbability.OverallTest();
             //TestStem();
 
             //Workarounds.TestPurePython();

@@ -260,7 +260,7 @@ namespace TestApp
 
 
 
-### Other examples that uses IronPython built-in functions:
+### Other examples that uses IronPython [built-in functions](https://ironpython-test.readthedocs.io/en/latest/library/functions.html):
 
 ```C#
 using NltkNet;
