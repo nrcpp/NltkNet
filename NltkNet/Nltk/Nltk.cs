@@ -16,7 +16,7 @@ namespace NltkNet
             Py.AddLibPaths(libsPaths);
             Py.ImportModule("nltk");
             Py.SetDefaultModule("nltk");
-
+            
             // we need to set os platform to 'win', instead of 'cli' to make it work such things as 'nltk.pos_tag(words)'
             Py.ImportModule("sys");
             Py.ExecuteScript("sys.platform = 'win32'");            

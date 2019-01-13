@@ -107,8 +107,7 @@ namespace TestApp
 
             //TestPosTagger();
             StandardLibrary.InternalTest();
-            Console.ReadLine();
-
+            
             //TestNltkResultClass();            
             //TestTokenize();
             //TestProbability();
