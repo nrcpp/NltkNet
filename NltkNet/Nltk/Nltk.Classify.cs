@@ -17,6 +17,13 @@ namespace NltkNet
                 Module = BuiltIns.ImportNames("nltk.classify");
             }
 
+            // accuracy(classifier, test_set))
+            public static dynamic Accuracy(dynamic classifier, dynamic test_set)
+            {
+                dynamic classify = BuiltIns.ImportNames("nltk.classify", "accuracy");
+                return classify.accuracy(classifier, test_set);
+            }
+
             public static class NaiveBayes
             {
                 public readonly static dynamic Module;

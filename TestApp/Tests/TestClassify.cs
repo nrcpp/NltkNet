@@ -37,14 +37,17 @@ namespace TestApp
             //featuresets = [(gender_features(n), gender) for (n, gender) in labeled_names]
             //train_set, test_set = featuresets[500:], featuresets[:500]
             var featuresets = labeledNames.Select(nameAndGender => (GenderFeature(nameAndGender.name), nameAndGender.gender)).ToList();
-            var train_set = featuresets.Take(500).ToList();
+            var train_set = featuresets.SkipLast(500).ToList();
             var test_set = featuresets.TakeLast(500).ToList();
 
             // nltk.NaiveBayesClassifier.train(train_set)
             dynamic classifier = Nltk.NaiveBayesClassifier.Train(train_set);
 
             // classifier.classify(gender_features('Neo'))
-            Print(classifier.classify(GenderFeature("Neo")));
+            Print("Neo=" + classifier.classify(GenderFeature("Neo")));
+            Print("Trinity=" + classifier.classify(GenderFeature("Trinity")));
+            Print(Nltk.Classify.Accuracy(classifier, test_set));
+            classifier.show_most_informative_features(5);
         }
     }
 }
