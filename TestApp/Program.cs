@@ -100,7 +100,9 @@ namespace TestApp
 
             //TestNltkResultClass();            
             //TestTokenize();
-            TestProbability.OverallTest();
+            //TestProbability.OverallTest();
+
+            TestClassify.TestNames();
             //TestStem();
 
             //Workarounds.TestPurePython();

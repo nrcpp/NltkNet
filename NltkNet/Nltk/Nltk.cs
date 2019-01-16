@@ -41,6 +41,12 @@ namespace NltkNet
         }
 
 
+        public static class NaiveBayesClassifier
+        {
+            public static dynamic Train(dynamic featureSet) => Classify.NaiveBayes.NaiveBayesClassifier.Train(featureSet);
+        }
+
+
         public class Text : NltkClass<Text>
         {
             public Text(object pyObject) : base(pyObject)
