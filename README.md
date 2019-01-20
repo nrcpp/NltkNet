@@ -44,6 +44,11 @@ There are different ways to install nltk library. If you have experience with us
 - _From command line using pip._ Run &#39;pip install nltk&#39; from command line. Path to _Pip.exe_ have to be added to PATH environment variable. If you have several Python environments in system then, make sure you&#39;re installing _nltk_ library to IronPython path.
 - _From binaries._ Download binaries from [https://pypi.org/project/nltk/#files](https://pypi.org/project/nltk/#files). And run installer or unpack archive to &lt;IronPythonPath&gt;\Libs\site-packages\nltk. See [https://www.nltk.org/install.html](https://www.nltk.org/install.html) for more details.
 
+#### Install NumPy library for IronPython
+
+`NumPy` library is used by some NLTK functions such as `nltk.ne_chunk()` (Named Entity Recognition).
+So, run NumPy library installation using `pip` as in previous section. And then make sure that NumPy library installed to *IronPython* site-packages folder.
+
 ### **Install NLTK corpuses**
 
 _Corpus_(plural _corpora_) or _text corpus_ is a large and structured set of texts (nowadays usually electronically stored and processed). In corpus linguistics, they are used to do statistical analysis and hypothesis testing, checking occurrences or validating linguistic rules within a specific language territory.
