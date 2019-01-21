@@ -83,13 +83,28 @@ namespace TestApp
             Console.WriteLine(tuple.Item1 + " " + tuple.Item2);
         }
 
+        static void TestNameEntityRecognizer()
+        {
+            string text = "WASHINGTON -- In the wake of a string of abuses by New York police officers in the 1990s, Loretta E. Lynch, "+
+                         "the top federal prosecutor in Brooklyn, spoke forcefully about the pain of a broken trust that African-Americans "+
+                         "felt and said the responsibility for repairing generations of miscommunication and mistrust fell to law enforcement.";
+
+            var tokens = Nltk.Tokenize.WordTokenize(text);
+            var posTaggedWords = Nltk.PosTag(tokens.AsNet);
+
+            // NOTE: This operation requires NumPy library for IronPython
+            var neChunks = Nltk.NeChunk(posTaggedWords);        
+
+            BuiltIns.Print($"NER output for text: '{text}'");
+            BuiltIns.Print(neChunks);
+        }
 
         static void Main(string[] args)
         {
             Nltk.Init(new List<string>
             {
                 @"C:\IronPython27\Lib",
-                @"C:\IronPython27\Lib\site-packages",
+                @"C:\IronPython27\Lib\site-packages",                
             });
 
 
@@ -102,7 +117,8 @@ namespace TestApp
             //TestTokenize();
             //TestProbability.OverallTest();
 
-            TestClassify.TestNames();
+            //TestClassify.TestNames();
+            TestNameEntityRecognizer();
             //TestStem();
 
             //Workarounds.TestPurePython();
