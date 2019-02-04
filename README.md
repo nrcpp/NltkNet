@@ -44,19 +44,6 @@ There are different ways to install nltk library. If you have experience with us
 - _From command line using pip._ Run &#39;pip install nltk&#39; from command line. Path to _Pip.exe_ have to be added to PATH environment variable. If you have several Python environments in system then, make sure you&#39;re installing _nltk_ library to IronPython path.
 - _From binaries._ Download binaries from [https://pypi.org/project/nltk/#files](https://pypi.org/project/nltk/#files). And run installer or unpack archive to &lt;IronPythonPath&gt;\Libs\site-packages\nltk. See [https://www.nltk.org/install.html](https://www.nltk.org/install.html) for more details.
 
-#### Install NumPy/SciPy libraries for IronPython
-
-`NumPy` library is used by some NLTK functions such as `nltk.ne_chunk()` (Named Entity Recognition).
-So, follow this steps to install NumPy library for IronPython:
-1. Download ironpkg-1.0.0.py from https://raw.githubusercontent.com/ptmono/anipang_b/master/ironpkg-1.0.0.py to IronPython folder
-2. Run console and cd to IronPython folder there. So you will be able to run `ipy ironpkg-1.0.0.py --install`
-3. After ironpkg and ironegg was installed, run `ironpkg scipy` to install *NumPy* and *SciPy* libraries.
-4. In case you've got errors on installation, then download numpy and scipy egg files from here http://code.enthought.com/.iron/eggs/index.html
-5. Then run `ironegg scipy-1.0.0-2.egg` and `ironegg numpy-2.0.0-1.egg` (versions may be changed)
-6. Make sure you've got folders *&lt;IronPython Path&gt;\Libs\site-packages\scipy* and *&lt;IronPython Path&gt;\Libs\site-packages\numpy*
-
-Follow [this StackOverflow](https://stackoverflow.com/questions/29397540/how-to-install-numpy-and-scipy-for-ironpython27-old-method-doenst-work) question for actual information.
-
 
 ### **Install NLTK corpuses**
 
