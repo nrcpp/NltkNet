@@ -4,7 +4,7 @@
     <!--*-->
     <id>NltkNet</id>
     <!--*-->
-    <version>1.0.13</version>
+    <version>1.0.14</version>
     <title>NltkNet</title>
     <!--*-->
     <authors>Denis Kazakov</authors>
@@ -18,7 +18,7 @@
     <!--*-->
     <releaseNotes>- Nltk.NaiveBayesClassifier.Train(train_set)
 - Nltk.Classify.Accuracy(classifier, test_set)</releaseNotes>
-    <copyright>Copyright ©  2018</copyright>
+    <copyright>Copyright ©  2021</copyright>
     <tags>nltk,nlp,,parser, tokenizer, categorizer, POS, NER, chunker,IronPython</tags>
     <dependencies>
       <dependency id="IronPython" version="2.7.9" />
