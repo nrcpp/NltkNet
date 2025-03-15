@@ -14,8 +14,8 @@ namespace TestApp
             // Initialization required
             Nltk.Init(new List<string>
             {
-                @"C:\IronPython27\Lib",
-                @"C:\IronPython27\Lib\site-packages",
+                @"C:\Program Files\IronPython 3.4\Lib",
+                @"C:\Program Files\IronPython 3.4\Lib\site-packages",
             });
 
 

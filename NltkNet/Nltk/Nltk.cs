@@ -32,7 +32,7 @@ namespace NltkNet
         {
             AppDomain.CurrentDomain.AssemblyResolve += (s, e) => {
                 var filename = new AssemblyName(e.Name).Name;
-                var path = $@"C:\IronPython27\DLLs\{filename}.dll";
+                var path = $@"C:\Program Files\IronPython 3.4\DLLs\{filename}.dll";
                 if (File.Exists(path))
                     return Assembly.LoadFrom(path);
                 return null;

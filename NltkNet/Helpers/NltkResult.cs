@@ -100,7 +100,7 @@ namespace NltkNet
 
         public class NltkResultListString : NltkResult<List<string>, IronPython.Runtime.List>
         {
-            public override Func<List, List<string>> ToNetConverter => list => list.Cast<string>().ToList();
+            public override Func<IronPython.Runtime.List, List<string>> ToNetConverter => list => list.Cast<string>().ToList();
         }
 
         public class NltkResultListStringDynamic : NltkResult<List<string>, dynamic>

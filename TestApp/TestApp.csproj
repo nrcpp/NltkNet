@@ -1,24 +1,18 @@
-<Project Sdk="Microsoft.NET.Sdk">
-
+﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <OutputType>Exe</OutputType>
-    <TargetFramework>netcoreapp2.0</TargetFramework>
-    <LangVersion>7.1</LangVersion>
+    <TargetFramework>net8.0</TargetFramework>
+    <LangVersion>latest</LangVersion>
   </PropertyGroup>
-
   <ItemGroup>
-    <PackageReference Include="IronPython" Version="2.7.9" />
-    <PackageReference Include="System.ValueTuple" Version="4.3.0" />
+    <PackageReference Include="IronPython" Version="2.7.12" />
   </ItemGroup>
-
   <ItemGroup>
     <ProjectReference Include="..\NltkNet\NltkNet.csproj" />
   </ItemGroup>
-
   <ItemGroup>
     <None Update="files\test.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
   </ItemGroup>
-
 </Project>

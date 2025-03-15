@@ -1,4 +1,5 @@
-﻿using NltkNet;
+﻿using IronPython.Hosting;
+using NltkNet;
 using System;
 using System.Collections.Generic;
 using System.Dynamic;
@@ -101,10 +102,24 @@ namespace TestApp
 
         static void Main(string[] args)
         {
+            var engine = Python.CreateEngine();
+            var scope = engine.CreateScope();
+            string pythonCode = @"
+
+print('hello from ironPython')
+";
+            try
+            {
+                engine.Execute(pythonCode, scope);  
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.ToString());
+            }
             Nltk.Init(new List<string>
             {
-                @"C:\IronPython27\Lib",
-                @"C:\IronPython27\Lib\site-packages",                
+                @"C:\Program Files\IronPython 3.4\Lib",
+                @"C:\Program Files\IronPython 3.4\Lib\site-packages",                
             });
 
 
