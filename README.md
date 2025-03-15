@@ -8,7 +8,7 @@
 
 ## **Frameworks supported**
 
-- .NET 4.5 or later
+- .NET 4.5 or later, .NET 8
 
 ## **Dependencies**
 
