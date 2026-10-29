@@ -6,11 +6,10 @@ on:
       run_id:
         description: Successful Runtime packages CI run ID
         required: true
-        default: '40919248826'
       version:
         description: Exact package version from that run
         required: true
-        default: '2.0.0-preview.1'
+        default: '2.0.0'
       publish:
         description: Publish immutable packages publicly to nuget.org
         type: boolean
@@ -19,10 +18,6 @@ on:
         description: Confirm applicable redistribution rights and recipient terms
         type: boolean
         default: false
-  push:
-    paths:
-      - .github/workflows/publish.yml
-      - eng/select_release_packages.py
 
 permissions:
   contents: read
@@ -46,13 +41,13 @@ jobs:
         id: candidate
         env:
           GH_TOKEN: ${{ github.token }}
-          RUN_ID: ${{ inputs.run_id || '40919248826' }}
-          VERSION: ${{ inputs.version || '2.0.0-preview.1' }}
+          RUN_ID: ${{ inputs.run_id }}
+          VERSION: ${{ inputs.version }}
         shell: bash
         run: |
           set -euo pipefail
           [[ "$RUN_ID" =~ ^[0-9]+$ ]]
-          [[ "$VERSION" =~ ^[0-9]+\.[0-9]+\.[0-9]+(-[A-Za-z0-9.-]+)?$ ]]
+          [[ "$VERSION" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]
           gh api "repos/$GITHUB_REPOSITORY/actions/runs/$RUN_ID" > candidate.json
           python - <<'PY'
           import json, os
@@ -61,7 +56,7 @@ jobs:
               or candidate["event"] not in ("push", "workflow_dispatch")
               or candidate["path"] != ".github/workflows/runtime-packages.yml"
               or candidate["head_repository"]["full_name"] != os.environ["GITHUB_REPOSITORY"]
-              or candidate["head_branch"] not in ("master", "release/net10-runtime-preview")):
+              or candidate["head_branch"] != "master"):
               raise ValueError("Candidate must be successful native CI from an approved repository branch")
           with open(os.environ["GITHUB_OUTPUT"], "a") as output:
               output.write("commit=" + candidate["head_sha"] + "\n")

@@ -1,4 +1,4 @@
-NltkNet runtime preview
+NltkNet runtime
 
 The NltkNet packaging and integration code is covered by the repository's MIT
 license. Bundled components retain their own licenses, not the NltkNet license.
@@ -62,9 +62,8 @@ https://pypi.org/project/colorama/0.4.6/ (Windows runtime)
 NLTK models and corpora are NOT included. Their redistribution terms must be
 reviewed separately before publishing any dataset package.
 
-This is a local preview, not a declaration that all release/legal review is
-complete. Review bundled licenses and supported OS versions before public
-distribution.
+Publication is not a declaration of downstream legal clearance. Review bundled
+licenses and supported OS versions before redistributing the runtime.
 
 PUBLICATION REVIEW: PUBLISHING-REVIEW.txt and inventory.json explicitly record
 unresolved platform obligations. The current Linux variant excludes the

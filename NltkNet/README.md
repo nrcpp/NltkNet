@@ -1,4 +1,4 @@
-# NltkNet 2.0 preview
+# NltkNet 2.0
 
 .NET 10 wrappers for modern NLTK using Python.NET, without system Python or
 IronPython installations.
@@ -10,12 +10,12 @@ Alpine/musl and other architectures are not included.
 The Linux runtime excludes the Berkeley DB `_dbm` backend and uses a custom
 NumPy build without external BLAS/Fortran libraries. Other dbm/shelve backends
 remain available; matrix-heavy operations may be slower.
-All preview packages use version `2.0.0-preview.1` and are available on nuget.org.
+The library and matching runtime packages use version `2.0.0`.
 
 ```sh
-dotnet add package NltkNet --version 2.0.0-preview.1
+dotnet add package NltkNet --version 2.0.0
 # Choose the runtime matching your deployment platform:
-dotnet add package NltkNet.Runtime.osx-arm64 --version 2.0.0-preview.1
+dotnet add package NltkNet.Runtime.osx-arm64 --version 2.0.0
 ```
 
 ```csharp

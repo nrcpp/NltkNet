@@ -6,8 +6,8 @@
   </PropertyGroup>
   <Import Project="../eng/host-runtime.props" />
   <ItemGroup>
-    <PackageReference Include="NltkNet" Version="2.0.0-preview.1" />
-    <PackageReference Include="NltkNet.Runtime.$(NltkNetRuntimeRid)" Version="2.0.0-preview.1" />
+    <PackageReference Include="NltkNet" Version="2.0.0" />
+    <PackageReference Include="NltkNet.Runtime.$(NltkNetRuntimeRid)" Version="2.0.0" />
     <Compile Include="../TestApp/Tests/RuntimeTests.cs" Link="RuntimeTests.cs" />
   </ItemGroup>
 </Project>

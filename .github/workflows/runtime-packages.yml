@@ -43,6 +43,10 @@ jobs:
         run: bash eng/prepare-data.sh
       - name: Verify source consumer
         run: dotnet run --project TestApp -- --self-test
+      - name: Verify example tour
+        run: |
+          dotnet run --project TestApp --no-build
+          dotnet run --project TestApp --no-build -- --without-data
       - name: Verify Linux C-locale Unicode paths
         if: matrix.rid == 'linux-x64'
         run: LANG=C LC_ALL=C bash eng/verify-packages.sh

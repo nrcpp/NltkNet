@@ -4,9 +4,9 @@
 
 C# wrappers for [NLTK](https://www.nltk.org/) on .NET 10.
 
-## CPython preview (2.0.0-preview.1)
+## NltkNet 2.0.0
 
-This branch replaces IronPython with Python.NET and a portable CPython
+Version 2 replaces IronPython with Python.NET and a portable CPython
 distribution. Applications do not need an installed Python interpreter, pip,
 environment variables, or absolute paths.
 
@@ -110,14 +110,14 @@ the package-consumer checks on the target OS before release.
 
 ## NuGet consumption
 
-Version `2.0.0-preview.1` is available on
-[nuget.org](https://www.nuget.org/packages/NltkNet/2.0.0-preview.1).
+Install version `2.0.0` from
+[nuget.org](https://www.nuget.org/packages/NltkNet/2.0.0).
 Install the API and the runtime matching your deployment platform, for example
 on macOS ARM64:
 
 ```sh
-dotnet add package NltkNet --version 2.0.0-preview.1
-dotnet add package NltkNet.Runtime.osx-arm64 --version 2.0.0-preview.1
+dotnet add package NltkNet --version 2.0.0
+dotnet add package NltkNet.Runtime.osx-arm64 --version 2.0.0
 ```
 
 For local development, packaging uses the SDK projects. Build a local feed:
@@ -130,7 +130,7 @@ dotnet pack NltkNet.Runtime.linux-x64/NltkNet.Runtime.linux-x64.csproj -c Releas
 ```
 
 Reference `NltkNet` and the matching `NltkNet.Runtime.<rid>`, both at version
-`2.0.0-preview.1`. When testing locally built packages, add the local feed
+`2.0.0`. When testing locally built packages, add the local feed
 alongside nuget.org (needed for Python.NET and its dependencies).
 
 ```csharp
@@ -230,7 +230,7 @@ Corpus APIs may require additional datasets not prepared by the script.
   use `Evaluate` for expressions. Python snippets must use Python 3 syntax.
 - Custom modules can be added explicitly with `Nltk.Py.AddLibPaths(...)`.
   This is not required for the packaged interpreter or NLTK.
-- Named dynamic arguments are not supported in this preview; use Python
+- Named dynamic arguments are not supported; use Python
   expressions for keyword calls.
 - CPython is process-global. NltkNet owns its initialization and keeps it alive
   for the process lifetime; shutdown/reinitialization and sharing an interpreter
@@ -238,7 +238,7 @@ Corpus APIs may require additional datasets not prepared by the script.
   Separate `PythonWrapper` scopes can be disposed.
 - There is no Windows platform spoofing or system IronPython DLL resolver.
 
-These are breaking changes and are versioned as a new major-version preview.
+These breaking changes are released in major version 2.
 
 ## Package verification
 
@@ -266,11 +266,11 @@ The shared regression checks exercise tokenization, stemming, lemmatization,
 POS, NER, generators, tuples, dictionaries, corpora, classification, exceptions,
 repeated initialization, garbage collection and calls from multiple threads.
 
-Only ordinary framework-dependent build/publish is supported in this preview.
-Single-file, trimming, Native AOT, other RIDs, automatic upgrades and public
-NuGet publication are not claimed. Review all bundled component licenses and
-OS support before a public release; notices and upstream license files are
-included in the runtime package/archive.
+Only ordinary framework-dependent build/publish is supported.
+Single-file, trimming, Native AOT, other RIDs and automatic upgrades are not
+supported. Review all bundled component licenses and OS support before
+redistribution; notices and upstream license files are included in the runtime
+package/archive.
 
 ## Runtime licenses
 
@@ -353,7 +353,8 @@ python3 eng/verify_licenses.py .artifacts/feed/NltkNet.Runtime.*.nupkg
 Verification checks license metadata, full-text inclusion, original hashes,
 embedded copies and the native binary inventory. Native CI runs these checks.
 `--require-publishable` additionally rejects unresolved obligations or missing
-legal clearance; it intentionally fails for the current previews.
+legal clearance; publisher confirmation is recorded separately for each release,
+not inferred from a version number or successful automated checks.
 
 **Collection is not legal clearance.** The Linux variant removes the previous
 Berkeley DB and libquadmath blockers rather than declaring their terms
@@ -370,8 +371,8 @@ detected by these checks, but that is not an assertion of legal clearance.
 `.github/workflows/publish.yml` selects four packages from a successful native
 CI run and checks their IDs, versions, source commit and runtime licenses.
 It preserves those binaries without rebuilding and records SHA-256 hashes.
-Push-triggered runs only validate/package the candidate; they never publish.
-The first candidate is CI run `40919248826`, version `2.0.0-preview.1`.
+Publishing is manual-only. Supply the successful native CI run ID explicitly;
+the workflow accepts stable versions and candidates from `master` only.
 
 In nuget.org, signed in as the package owner, create a Trusted Publishing
 policy with:
@@ -379,8 +380,9 @@ policy with:
 - Repository owner: `nrcpp`; repository: `NltkNet`.
 - Workflow filename: `publish.yml` (without directory).
 - Environment: `nuget`; policy owner: `skeleton`.
-- Scopes: new packages and new versions; package pattern `NltkNet*`.
-  This is needed for the three new runtime package IDs as well as `NltkNet`.
+- Scopes: new packages and new versions for the exact IDs `NltkNet`,
+  `NltkNet.Runtime.osx-arm64`, `NltkNet.Runtime.win-x64` and
+  `NltkNet.Runtime.linux-x64`.
 
 Configure the GitHub `nuget` environment with a required reviewer and restricted
 deployment branches. Merge the reviewed workflow into the default branch
@@ -391,8 +393,7 @@ The latter is an explicit per-release publisher confirmation, not automated
 legal clearance. No persistent API key is needed; only the publish job can
 request a short-lived OIDC credential. Never send credentials in chat.
 
-The current packages are local previews, not release-ready cross-platform
-distributions. Before uploading:
+Before uploading a new release:
 
 1. Verify ownership of the library and runtime package IDs on nuget.org, choose
    an unused version, and confirm the published platform scope against passing
@@ -419,5 +420,5 @@ distributions. Before uploading:
 
 The icon is cropped from the supplied cover and embedded in both packages as
 `icon.png`. NuGet metadata includes authors, project/repository URLs and tags.
-The cover is displayed here; GitHub's social-preview image must be uploaded
+The cover is displayed here; GitHub's social sharing image must be uploaded
 separately in the repository settings.
