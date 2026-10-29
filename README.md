@@ -19,11 +19,9 @@ Runtime packages are provided for:
 | `NltkNet.Runtime.linux-x64` | Linux x64, glibc 2.28+ and the native dependencies required by .NET 10 |
 
 Alpine/musl, Windows/Linux ARM64 and macOS x64 are not included. Linux is a
-glibc runtime, not a fully static executable. Windows validation runs in the
-native CI matrix; local cross-packaging alone does not establish support.
-Locally verified: macOS ARM64 and Linux x64 (Ubuntu 24.04 Docker, including an
-offline non-root run). The Windows package has been cross-built and its publish
-assets checked, but a passing Windows CI run is still required before release.
+glibc runtime, not a fully static executable. All three platforms passed the
+native CI matrix, including tests against the actual NuGet packages.
+Linux was also verified offline as a non-root user in an Ubuntu 24.04 container.
 
 Components:
 
@@ -46,6 +44,44 @@ bash eng/prepare-data.sh
 dotnet run --project TestApp
 dotnet run --project TestApp -- --self-test
 ```
+
+### Example tour
+
+TestApp runs three independent, numbered groups by default:
+
+| Group | Source | Demonstrates |
+|---|---|---|
+| 1 | [01_TextExamples.cs](TestApp/Examples/01_TextExamples.cs) | Word/punctuation/sentence tokenization, character spans, stemming, lemmatization, POS tags, named entities and corpus readers |
+| 2 | [02_LearningExamples.cs](TestApp/Examples/02_LearningExamples.cs) | Frequencies, conditional counts, Naive Bayes training, predictions, probabilities and accuracy |
+| 3 | [03_PythonExamples.cs](TestApp/Examples/03_PythonExamples.cs) | Python scopes, scripts, functions, objects, containers, built-ins, generic NLTK calls and parallel calls |
+
+```sh
+dotnet run --project TestApp -- --example=1
+dotnet run --project TestApp -- --example=2
+dotnet run --project TestApp -- --example=3
+dotnet run --project TestApp -- --without-data
+dotnet run --project TestApp -- --help
+```
+
+`--without-data` runs all model-free examples, including punctuation
+tokenization and stemming. Groups 2 and 3 never need datasets. Group 1 uses the
+development datasets from `eng/prepare-data.sh` by default; missing data raises
+an error rather than being downloaded or silently skipped.
+
+Extra corpus readers can be explored explicitly, for example:
+
+```sh
+dotnet run --project TestApp -- --example=1 --corpus=brown --corpus=stopwords
+```
+
+First provision those additional datasets under `nltknet/data` in the
+application output (or `.artifacts/nltk-data` before building), after reviewing
+their licenses. Supported names are `brown`, `gutenberg`, `stopwords`,
+`inaugural`, `webtext`, `nps_chat`, `names`, `timit` and `words`. The examples
+show file IDs, words and raw text, plus sentences/paragraphs or tagged text
+where supported by the reader. TIMIT uses utterance IDs and shows words and
+sentences instead of raw annotation files. These extra corpora are not downloaded by the
+development preparation script.
 
 Preparation downloads checksum-verified dependencies and development datasets.
 These are explicit build-time actions; neither `Nltk.Init()` nor the packaged
@@ -74,9 +110,17 @@ the package-consumer checks on the target OS before release.
 
 ## NuGet consumption
 
-The preview packages are generated locally; they have **not** been published
-to nuget.org. Packaging uses the SDK projects.
-Build them into a local feed:
+Version `2.0.0-preview.1` is available on
+[nuget.org](https://www.nuget.org/packages/NltkNet/2.0.0-preview.1).
+Install the API and the runtime matching your deployment platform, for example
+on macOS ARM64:
+
+```sh
+dotnet add package NltkNet --version 2.0.0-preview.1
+dotnet add package NltkNet.Runtime.osx-arm64 --version 2.0.0-preview.1
+```
+
+For local development, packaging uses the SDK projects. Build a local feed:
 
 ```sh
 dotnet pack NltkNet/NltkNet.csproj -c Release -o .artifacts/feed
@@ -86,19 +130,49 @@ dotnet pack NltkNet.Runtime.linux-x64/NltkNet.Runtime.linux-x64.csproj -c Releas
 ```
 
 Reference `NltkNet` and the matching `NltkNet.Runtime.<rid>`, both at version
-`2.0.0-preview.1`. Add the local feed alongside nuget.org (needed for Python.NET
-and its dependencies).
+`2.0.0-preview.1`. When testing locally built packages, add the local feed
+alongside nuget.org (needed for Python.NET and its dependencies).
 
 ```csharp
+using System;
+using System.Linq;
 using NltkNet;
 
 Nltk.Init();
-using var tokens = Nltk.Tokenize.WordpunctTokenize("Hello, world!");
-Console.WriteLine(string.Join(" | ", tokens.AsNet));
 
+// No models or corpora required for this complete example.
+using var tokens = Nltk.Tokenize.WordpunctTokenize(
+    "Developers build tools. Developers share tools!");
 var stemmer = new Nltk.Stem.PorterStemmer();
-Console.WriteLine(stemmer.Stem("programming"));
+using PythonValue ownedStemmer = stemmer.PyObject;
+var normalized = tokens.AsNet
+    .Where(word => word.All(char.IsLetter))
+    .Select(word => stemmer.Stem(word.ToLowerInvariant()))
+    .ToList();
+
+var frequencies = new Nltk.Probability.FreqDist(normalized);
+using PythonValue ownedFrequencies = frequencies.PyObject;
+using var common = frequencies.MostCommon(3);
+
+foreach (var (word, count) in common.AsNet)
+    Console.WriteLine($"{word}: {count}");
+// develop: 2
+// tool: 2
+// build: 1
 ```
+
+With the development models prepared, the same API also extracts entities:
+
+```csharp
+using var tokens = Nltk.Tokenize.WordTokenize("Barack Obama visited Washington.");
+using var tagged = Nltk.PosTag(tokens.AsNet);
+using PythonValue entities = Nltk.NeChunk(tagged);
+Console.WriteLine(entities); // NLTK tree with PERSON/GPE entity labels
+```
+
+The second snippet requires `punkt_tab`, `averaged_perceptron_tagger_eng`,
+`maxent_ne_chunker_tab` and `words`; see dataset provisioning below. See
+[TestApp examples](TestApp/Examples) for classification and Python interop.
 
 Runtime assets flow to normal build and publish outputs via `buildTransitive`.
 The runtime archive is verified against its packaged SHA-256, extracted once
