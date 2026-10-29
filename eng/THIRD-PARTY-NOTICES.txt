@@ -1,0 +1,74 @@
+NltkNet runtime preview
+
+The NltkNet packaging and integration code is covered by the repository's MIT
+license. Bundled components retain their own licenses, not the NltkNet license.
+
+The package's licenses/ directory contains original texts, a consolidated
+LICENSE.txt, inventory.json, source/download provenance and PUBLISHING-REVIEW.txt.
+The same directory is embedded in python.tar.gz. After extraction:
+- python/lib/python3.12/LICENSE.txt contains CPython license terms.
+- On Windows CPython's license is python/LICENSE.txt and the standard library
+  and Python package license files are under python/Lib/.
+- python/PYTHON-BUILD-STANDALONE-LICENSE contains the MPL-2.0 license of the
+  upstream build tooling. It is NOT a complete license inventory for CPython's
+  bundled native dependencies.
+- python/lib/python3.12/site-packages/*.dist-info/ contains Python package
+  metadata and license files.
+- python/requirements.lock records the installed package versions and hashes.
+- python/wheel-install-report.json records exact target-wheel URLs and hashes.
+
+The matching full CPython distribution's license files are preserved under
+licenses/cpython/, with its unmodified PYTHON.json and verified archive
+URL/SHA-256 alongside them. Some upstream license files cover components not
+present in a particular platform build; consult the link declarations and
+actual native file inventory rather than assuming every license applies.
+
+Python package and vendored dependency notices are preserved under
+licenses/python-packages/. NumPy's wheel LICENSE.txt includes native-library
+terms. Windows wheels retain their OpenBLAS/GCC-runtime notices. The custom
+Linux NumPy wheel uses internal BLAS/LAPACK without bundled Fortran runtimes.
+The inventory records the files actually present, not just wheel declarations.
+
+Linux runtime-modifications.json records removal of CPython's _dbm extension
+and its statically linked Berkeley DB. Original upstream license/metadata
+files are retained for provenance but do not indicate that removed code ships.
+numpy-build-provenance.json and numpy-build-requirements.lock identify the
+custom Linux NumPy source, build environment, options and wheel hash.
+
+Windows includes Microsoft's hash-verified VS 2022 Community terms under
+licenses/microsoft/, together with a publisher/distributor review checklist.
+The terms do not license those DLLs under MIT or constitute acceptance by
+the publisher or recipients. microsoft-redistribution.json records DLL versions
+and hashes. Consult the license applicable to the publisher's actual edition.
+
+Unmodified tqdm source is included in site-packages/tqdm; its MPL-2.0/MIT terms
+remain applicable independently of NltkNet's MIT license. Unmodified pip
+vendored sources/notices, including certifi where present, remain available
+under site-packages/pip/_vendor. Source-form recipients retain the rights
+granted by the respective licenses.
+
+Upstream sources:
+https://github.com/astral-sh/python-build-standalone/releases/tag/20261026
+https://pypi.org/project/nltk/3.10.4/
+https://pypi.org/project/numpy/2.5.4/
+https://pypi.org/project/click/8.5.0/
+https://pypi.org/project/joblib/1.6.0/
+https://pypi.org/project/regex/2026.9.29/
+https://pypi.org/project/tqdm/4.70.1/
+https://pypi.org/project/defusedxml/0.7.1/
+https://pypi.org/project/cloudpickle/3.1.2/
+https://pypi.org/project/colorama/0.4.6/ (Windows runtime)
+
+NLTK models and corpora are NOT included. Their redistribution terms must be
+reviewed separately before publishing any dataset package.
+
+This is a local preview, not a declaration that all release/legal review is
+complete. Review bundled licenses and supported OS versions before public
+distribution.
+
+PUBLICATION REVIEW: PUBLISHING-REVIEW.txt and inventory.json explicitly record
+unresolved platform obligations. The current Linux variant excludes the
+Berkeley DB/Sleepycat and libquadmath components. Microsoft runtime DLL
+redistribution entitlement/downstream terms on Windows still require publisher
+confirmation. Do not treat license collection
+as confirmation that these obligations have been satisfied.

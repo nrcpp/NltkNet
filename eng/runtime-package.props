@@ -1,0 +1,31 @@
+<Project>
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <PackageId>NltkNet.Runtime.$(RuntimePackageRid)</PackageId>
+    <Version>2.0.0-preview.1</Version>
+    <Description>Portable CPython 3.12 and NLTK runtime for NltkNet on $(RuntimePackageRid).</Description>
+    <IncludeBuildOutput>false</IncludeBuildOutput>
+    <SuppressDependenciesWhenPacking>true</SuppressDependenciesWhenPacking>
+    <PackageLicenseFile>licenses/LICENSE.txt</PackageLicenseFile>
+    <PackageRequireLicenseAcceptance Condition="'$(RuntimePackageRid)' == 'win-x64'">true</PackageRequireLicenseAcceptance>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+    <PackageIcon>icon.png</PackageIcon>
+    <Authors>Denis Kazakov</Authors>
+    <PackageProjectUrl>https://github.com/nrcpp/NltkNet</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/nrcpp/NltkNet.git</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+    <PackageTags>nltk;python;cpython;runtime;$(RuntimePackageRid)</PackageTags>
+  </PropertyGroup>
+  <ItemGroup>
+    <None Include="$(MSBuildProjectDirectory)/runtimes/$(RuntimePackageRid)/native/*" Pack="true" PackagePath="runtimes/$(RuntimePackageRid)/native/%(Filename)%(Extension)" />
+    <None Include="$(MSBuildProjectDirectory)/runtimes/licenses/**/*" Pack="true" PackagePath="licenses/" />
+    <None Include="$(MSBuildProjectDirectory)/buildTransitive/*.targets" Pack="true" PackagePath="buildTransitive/%(Filename)%(Extension)" />
+    <None Include="$(MSBuildThisFileDirectory)../NltkNet/README.md" Pack="true" PackagePath="README.md" />
+    <None Include="$(MSBuildThisFileDirectory)../assets/nuget-icon.png" Pack="true" PackagePath="icon.png" />
+    <None Include="$(MSBuildThisFileDirectory)THIRD-PARTY-NOTICES.txt" Pack="true" PackagePath="THIRD-PARTY-NOTICES.txt" />
+  </ItemGroup>
+  <Target Name="CheckPreparedRuntime" BeforeTargets="GenerateNuspec">
+    <Error Condition="!Exists('$(MSBuildProjectDirectory)/runtimes/$(RuntimePackageRid)/native/python.tar.gz') Or !Exists('$(MSBuildProjectDirectory)/runtimes/$(RuntimePackageRid)/native/python.tar.gz.sha256')" Text="Prepare the portable runtime and checksum first: bash eng/prepare-runtime.sh $(RuntimePackageRid)" />
+    <Error Condition="!Exists('$(MSBuildProjectDirectory)/runtimes/licenses/LICENSE.txt') Or !Exists('$(MSBuildProjectDirectory)/runtimes/licenses/inventory.json')" Text="License documents are missing. Rebuild with bash eng/prepare-runtime.sh $(RuntimePackageRid)" />
+  </Target>
+</Project>

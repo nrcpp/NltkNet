@@ -1,0 +1,41 @@
+NltkNet Windows runtime - Microsoft redistribution review
+
+The bundled Microsoft DLLs are NOT licensed under NltkNet's MIT license.
+Their original binary contents are retained from the pinned CPython and NumPy
+distributions. microsoft-redistribution.json records versions, SHA-256 hashes
+and upstream terms. NumPy's wheel renames its MSVCP DLL; its contents are not
+modified by NltkNet.
+
+The VS 2022 Community terms are included verbatim as extracted from Microsoft's
+hash-verified official document. This inclusion does NOT grant a Visual Studio
+license to the publisher, accept an agreement for anyone, or assert compliance.
+Use the terms applicable to your actual licensed edition.
+
+VS 2022 Community's individual-use clause and OSI-open-source development clause
+provide possible no-cost licensing routes. Section 4 covers Distributable Code,
+with a link to the REDIST list, and permits third-party distribution as part
+of applications subject to its conditions. The Microsoft redistribution
+documentation limits redistribution to licensed Visual Studio users.
+
+Before public publication the publisher must:
+1. Confirm a valid applicable Visual Studio license and entitlement covering
+   the runtime files, including the copies obtained through upstream wheels.
+   Do not assume that merely using a GitHub-hosted Windows runner grants
+   redistribution rights to the account publishing a NuGet package.
+2. Verify the applicable REDIST list and original binary form for each DLL.
+   The reviewed filenames are vcruntime140.dll, vcruntime140_1.dll and NumPy's
+   hashed-name msvcp140 DLL; inspect the exact inventory versions and hashes.
+3. Comply with section 4's significant-primary-functionality and downstream
+   distributor/end-user protective-terms requirements and restrictions.
+   Merely linking to or including this agreement is not proof of acceptance
+   of sufficiently protective terms by downstream recipients.
+4. Preserve applicable third-party terms in application distributions.
+   Do not represent the Microsoft DLLs as MIT/open-source components.
+
+The Windows NuGet requests license acceptance, but not every NuGet client
+enforces an interactive acceptance step. Application distributors must arrange
+the required recipient terms; the NuGet flag alone does not establish this.
+
+This is the bundled, no-extra-runtime-installation route. Until the publisher
+confirms the above, publication remains blocked. No external VC++ installer
+is downloaded or launched on library initialization.

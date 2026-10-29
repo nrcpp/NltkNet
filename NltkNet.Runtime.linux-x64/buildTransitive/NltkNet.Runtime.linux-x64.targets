@@ -1,0 +1,16 @@
+<Project>
+  <ItemGroup>
+    <Content Include="$(MSBuildThisFileDirectory)../runtimes/linux-x64/native/python.tar.gz">
+      <Link>nltknet/runtime/linux-x64/python.tar.gz</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+      <Visible>false</Visible>
+    </Content>
+    <Content Include="$(MSBuildThisFileDirectory)../runtimes/linux-x64/native/python.tar.gz.sha256">
+      <Link>nltknet/runtime/linux-x64/python.tar.gz.sha256</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+      <Visible>false</Visible>
+    </Content>
+  </ItemGroup>
+</Project>

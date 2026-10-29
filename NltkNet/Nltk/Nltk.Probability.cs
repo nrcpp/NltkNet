@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-namespace NltkNet
+﻿namespace NltkNet
 {
     public static partial class Nltk
     {
@@ -33,17 +28,15 @@ namespace NltkNet
                 {
                 }
 
-                public ConditionalFreqDist(string pythonExpresion) 
+                public ConditionalFreqDist(string pythonExpresion) : base()
                 {
                     if (pythonExpresion != null)
                     {
-                        dynamic expr = Py.ExecuteScript(pythonExpresion);
+                        dynamic expr = Py.Evaluate(pythonExpresion);
                         PyObject = CreateNltkObject(nameof(ConditionalFreqDist), expr);
                     }
                     
                 }
-
-                int N() => PyObject.N();
 
                 public dynamic Hapaxes() => PyObject.hapaxes();
 
@@ -58,22 +51,6 @@ namespace NltkNet
                 {
                     get => PyObject[conditionKey];
                 }
-
-                //{
-                //    get
-                //    {
-                //        var condition = PyObject[word];
-                //        if (condition == null || condition == 0)
-                //            condition = PyObject[word] = new Dictionary<object, object>();
-
-                //        return condition;
-                //    }
-
-                //    set
-                //    {
-                //        AddCondition((string)word, value);
-                //    }
-                //}
 
                 public NltkResult MostCommon(int? number = null)
                 {

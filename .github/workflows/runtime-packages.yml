@@ -1,0 +1,58 @@
+name: Runtime packages
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: macos-15
+            rid: osx-arm64
+          - os: windows-2022
+            rid: win-x64
+          - os: ubuntu-24.04
+            rid: linux-x64
+    runs-on: ${{ matrix.os }}
+    defaults:
+      run:
+        shell: bash
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 10.0.x
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Verify license collector regressions
+        run: python -m unittest discover -s eng -p test_licenses.py -v
+      - name: Build Linux NumPy without external BLAS or Fortran
+        if: matrix.rid == 'linux-x64'
+        run: bash eng/build-linux-numpy.sh
+      - name: Prepare pinned native runtime
+        run: bash eng/prepare-runtime.sh "${{ matrix.rid }}"
+      - name: Prepare development models
+        run: bash eng/prepare-data.sh
+      - name: Verify source consumer
+        run: dotnet run --project TestApp -- --self-test
+      - name: Verify Linux C-locale Unicode paths
+        if: matrix.rid == 'linux-x64'
+        run: LANG=C LC_ALL=C bash eng/verify-packages.sh
+      - name: Verify actual NuGet packages
+        if: matrix.rid != 'linux-x64'
+        run: bash eng/verify-packages.sh
+      - name: Verify packaged licenses and native inventory
+        run: python eng/verify_licenses.py .artifacts/feed/NltkNet.Runtime."${{ matrix.rid }}".*.nupkg
+      - uses: actions/upload-artifact@v4
+        with:
+          name: packages-${{ matrix.rid }}
+          path: .artifacts/feed/*.nupkg
+          if-no-files-found: error

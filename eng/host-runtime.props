@@ -1,0 +1,9 @@
+<Project>
+  <PropertyGroup>
+    <NltkNetRuntimeRid Condition="'$(NltkNetRuntimeRid)' == '' And '$(RuntimeIdentifier)' != ''">$(RuntimeIdentifier)</NltkNetRuntimeRid>
+    <NltkNetRuntimeRid Condition="'$(NltkNetRuntimeRid)' == ''">$(NETCoreSdkRuntimeIdentifier)</NltkNetRuntimeRid>
+  </PropertyGroup>
+  <Target Name="CheckNltkNetRuntimeRid" BeforeTargets="PrepareForBuild">
+    <Error Condition="'$(NltkNetRuntimeRid)' != 'osx-arm64' And '$(NltkNetRuntimeRid)' != 'win-x64' And '$(NltkNetRuntimeRid)' != 'linux-x64'" Text="Unsupported NltkNet runtime: $(NltkNetRuntimeRid). Use osx-arm64, win-x64 or linux-x64." />
+  </Target>
+</Project>
