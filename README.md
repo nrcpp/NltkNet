@@ -291,6 +291,32 @@ detected by these checks, but that is not an assertion of legal clearance.
 
 ## Publishing checklist
 
+### Keyless publishing setup
+
+`.github/workflows/publish.yml` selects four packages from a successful native
+CI run and checks their IDs, versions, source commit and runtime licenses.
+It preserves those binaries without rebuilding and records SHA-256 hashes.
+Push-triggered runs only validate/package the candidate; they never publish.
+The first candidate is CI run `40919248826`, version `2.0.0-preview.1`.
+
+In nuget.org, signed in as the package owner, create a Trusted Publishing
+policy with:
+
+- Repository owner: `nrcpp`; repository: `NltkNet`.
+- Workflow filename: `publish.yml` (without directory).
+- Environment: `nuget`; policy owner: `skeleton`.
+- Scopes: new packages and new versions; package pattern `NltkNet*`.
+  This is needed for the three new runtime package IDs as well as `NltkNet`.
+
+Configure the GitHub `nuget` environment with a required reviewer and restricted
+deployment branches. Merge the reviewed workflow into the default branch
+before using its manual Run workflow button. First dispatch with `publish`
+disabled. After reviewing the selected artifacts, dispatch with both `publish`
+and `redistribution_confirmed` enabled and approve the environment deployment.
+The latter is an explicit per-release publisher confirmation, not automated
+legal clearance. No persistent API key is needed; only the publish job can
+request a short-lived OIDC credential. Never send credentials in chat.
+
 The current packages are local previews, not release-ready cross-platform
 distributions. Before uploading:
 

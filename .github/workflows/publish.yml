@@ -1,0 +1,124 @@
+name: Publish tested NuGet packages
+
+on:
+  workflow_dispatch:
+    inputs:
+      run_id:
+        description: Successful Runtime packages CI run ID
+        required: true
+        default: '40919248826'
+      version:
+        description: Exact package version from that run
+        required: true
+        default: '2.0.0-preview.1'
+      publish:
+        description: Publish immutable packages publicly to nuget.org
+        type: boolean
+        default: false
+      redistribution_confirmed:
+        description: Confirm applicable redistribution rights and recipient terms
+        type: boolean
+        default: false
+  push:
+    paths:
+      - .github/workflows/publish.yml
+      - eng/select_release_packages.py
+
+permissions:
+  contents: read
+
+jobs:
+  prepare:
+    runs-on: ubuntu-24.04
+    permissions:
+      contents: read
+      actions: read
+    outputs:
+      commit: ${{ steps.candidate.outputs.commit }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Verify release selection regressions
+        run: python -m unittest discover -s eng -p test_release_packages.py -v
+      - name: Validate successful native CI candidate
+        id: candidate
+        env:
+          GH_TOKEN: ${{ github.token }}
+          RUN_ID: ${{ inputs.run_id || '40919248826' }}
+          VERSION: ${{ inputs.version || '2.0.0-preview.1' }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          [[ "$RUN_ID" =~ ^[0-9]+$ ]]
+          [[ "$VERSION" =~ ^[0-9]+\.[0-9]+\.[0-9]+(-[A-Za-z0-9.-]+)?$ ]]
+          gh api "repos/$GITHUB_REPOSITORY/actions/runs/$RUN_ID" > candidate.json
+          python - <<'PY'
+          import json, os
+          candidate = json.load(open("candidate.json"))
+          if (candidate["conclusion"] != "success"
+              or candidate["event"] not in ("push", "workflow_dispatch")
+              or candidate["path"] != ".github/workflows/runtime-packages.yml"
+              or candidate["head_repository"]["full_name"] != os.environ["GITHUB_REPOSITORY"]
+              or candidate["head_branch"] not in ("master", "release/net10-runtime-preview")):
+              raise ValueError("Candidate must be successful native CI from an approved repository branch")
+          with open(os.environ["GITHUB_OUTPUT"], "a") as output:
+              output.write("commit=" + candidate["head_sha"] + "\n")
+          PY
+          gh run download "$RUN_ID" --repo "$GITHUB_REPOSITORY" --dir downloaded
+          python eng/select_release_packages.py downloaded release "$VERSION" \
+            "$(python -c 'import json; print(json.load(open("candidate.json"))["head_sha"])')"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: reviewed-release
+          path: release/*
+          if-no-files-found: error
+
+  publish:
+    if: github.event_name == 'workflow_dispatch' && inputs.publish && inputs.redistribution_confirmed
+    needs: prepare
+    runs-on: ubuntu-24.04
+    environment: nuget
+    permissions:
+      contents: read
+      id-token: write
+    steps:
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 10.0.x
+      - uses: actions/download-artifact@v4
+        with:
+          name: reviewed-release
+          path: release
+      - name: Verify reviewed artifact hashes
+        run: |
+          python3 - <<'PY'
+          import hashlib, json
+          from pathlib import Path
+          root = Path("release")
+          hashes = json.loads((root / "SHA256.json").read_text())
+          if len(hashes) != 4 or {p.name for p in root.glob("*.nupkg")} != set(hashes):
+              raise ValueError("Expected exactly four reviewed packages")
+          for name, digest in hashes.items():
+              if Path(name).name != name or hashlib.sha256((root / name).read_bytes()).hexdigest() != digest:
+                  raise ValueError("Reviewed package hash mismatch: " + name)
+          PY
+      - name: NuGet trusted login
+        uses: NuGet/login@8d196754b4036150537f80ac539e15c2f1028841 # v1
+        id: login
+        with:
+          user: skeleton
+      - name: Publish reviewed runtime packages, then library
+        env:
+          NUGET_API_KEY: ${{ steps.login.outputs.NUGET_API_KEY }}
+          VERSION: ${{ inputs.version }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          for rid in osx-arm64 win-x64 linux-x64; do
+            dotnet nuget push "release/NltkNet.Runtime.$rid.$VERSION.nupkg" \
+              --source https://api.nuget.org/v3/index.json --api-key "$NUGET_API_KEY" --skip-duplicate
+          done
+          dotnet nuget push "release/NltkNet.$VERSION.nupkg" \
+            --source https://api.nuget.org/v3/index.json --api-key "$NUGET_API_KEY" --skip-duplicate
