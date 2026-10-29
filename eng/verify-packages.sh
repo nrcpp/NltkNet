@@ -20,16 +20,9 @@ if [[ "$rid" == win-x64 ]]; then cache="$(cygpath -m "$cache")"; fi
 
 dotnet pack "$root/NltkNet/NltkNet.csproj" -c Release -o "$feed"
 dotnet pack "$root/NltkNet.Runtime.$rid/NltkNet.Runtime.$rid.csproj" -c Release -o "$feed"
-if [[ "$rid" == win-x64 ]]; then
-    # Git Bash otherwise treats the combined NuGet sources as a Windows path list.
-    MSYS2_ARG_CONV_EXCL='*' dotnet restore "$(cygpath -m "$root/PackageSmokeTest/PackageSmokeTest.csproj")" \
-        --source "$(cygpath -m "$feed")" --source https://api.nuget.org/v3/index.json \
-        --packages "$(cygpath -m "$packages")" --force --no-cache
-else
-    dotnet restore "$root/PackageSmokeTest/PackageSmokeTest.csproj" \
-        --source "$feed" --source https://api.nuget.org/v3/index.json \
-        --packages "$packages" --force --no-cache
-fi
+dotnet restore "$root/PackageSmokeTest/PackageSmokeTest.csproj" \
+    --configfile "$root/PackageSmokeTest/NuGet.Config" \
+    --packages "$packages" --force --no-cache
 dotnet publish "$root/PackageSmokeTest/PackageSmokeTest.csproj" \
     -c Release --no-restore -p:RestorePackagesPath="$packages" -o "$publish"
 
