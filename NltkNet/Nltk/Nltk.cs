@@ -1,42 +1,45 @@
-﻿using IronPython.Runtime;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Reflection;
-using System.Text;
 
 namespace NltkNet
 {
     public static partial class Nltk
     {
-        public static PythonWrapper Py { get; private set; }
+        private static readonly object InitLock = new object();
+        private static PythonWrapper python;
 
-        public static void Init(List<string> libsPaths)
+        public static PythonWrapper Py => python ?? throw new InvalidOperationException("Call Nltk.Init() before using NltkNet.");
+
+        public static void Init()
         {
-            Py = new PythonWrapper();
-            Py.AddLibPaths(libsPaths);
-
-            // resolves assembly for NumPy/SciPy
-            InitAssemblyResolve();
-
-            Py.ImportModule("nltk");
-            Py.SetDefaultModule("nltk");
-            
-            // we need to set os platform to 'win', instead of 'cli' to make it work such things as 'nltk.pos_tag(words)'
-            Py.ImportModule("sys");
-            Py.ExecuteScript("sys.platform = 'win32'");
+            lock (InitLock)
+            {
+                if (python != null)
+                    return;
+                var candidate = new PythonWrapper();
+                try
+                {
+                    candidate.ImportModule("nltk");
+                    candidate.SetDefaultModule("nltk");
+                    candidate.SetVariable("_nltknet_data", Path.Combine(AppContext.BaseDirectory, "nltknet", "data"));
+                    candidate.ExecuteScript("import nltk\nnltk.data.path[:] = [_nltknet_data]");
+                    python = candidate;
+                }
+                catch
+                {
+                    candidate.Dispose();
+                    throw;
+                }
+            }
         }
 
-        private static void InitAssemblyResolve()
+        [Obsolete("Python is bundled. Use Init() without paths. Use Py.AddLibPaths only for additional custom Python modules.")]
+        public static void Init(List<string> libsPaths)
         {
-            AppDomain.CurrentDomain.AssemblyResolve += (s, e) => {
-                var filename = new AssemblyName(e.Name).Name;
-                var path = $@"C:\Program Files\IronPython 3.4\DLLs\{filename}.dll";
-                if (File.Exists(path))
-                    return Assembly.LoadFrom(path);
-                return null;
-            };
+            if (libsPaths != null && libsPaths.Count != 0)
+                throw new NotSupportedException("External IronPython installations are no longer supported. Use Nltk.Init() and the matching runtime NuGet package.");
+            Init();
         }
 
         public static dynamic Call(string funcName, params dynamic[] arguments) => Py.CallModuleFunction(funcName, arguments);
@@ -58,7 +61,8 @@ namespace NltkNet
 
         public static dynamic NeChunk(dynamic posTaggedText)
         {
-            var namedEntities = Py.CallModuleFunction("nltk", "ne_chunk", posTaggedText);
+            object input = posTaggedText is NltkResultListTupleStringString result ? result.AsPython : (object)posTaggedText;
+            var namedEntities = Py.CallModuleFunction("nltk", "ne_chunk", input);
 
             return namedEntities;
         }

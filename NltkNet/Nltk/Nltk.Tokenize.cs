@@ -1,10 +1,4 @@
-﻿using IronPython.Runtime;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-namespace NltkNet
+﻿namespace NltkNet
 {
     public static partial class Nltk
     {
@@ -12,7 +6,7 @@ namespace NltkNet
         {
             private static NltkResultListString TokenizeCall(string funcName, string text)
             {
-                IronPython.Runtime.List list = Call(funcName, text);
+                PythonValue list = Call(funcName, text);
                 
                 return new NltkResultListString()
                 {                    
@@ -31,7 +25,7 @@ namespace NltkNet
             {
                 public static NltkResultListTupleIntInt RegexpSpanTokenize(string text, string regexp)
                 {
-                    PythonGenerator generator = Call("regexp_span_tokenize", text, regexp);
+                    var generator = Py.CallModuleFunction("nltk.tokenize.util", "regexp_span_tokenize", text, regexp);
                     
                     return new NltkResultListTupleIntInt()
                     {                    

@@ -1,11 +1,6 @@
-﻿using IronPython.Hosting;
-using IronPython.Runtime;
-using System;
+﻿using System;
 using System.Collections.Generic;
-using System.Dynamic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace NltkNet
 {
@@ -21,10 +16,10 @@ namespace NltkNet
 
         #region From Python To .NET types converters
 
-        public static Dictionary<T1, T2> ToNetDictionary<T1, T2>(IronPython.Runtime.List list)
+        public static Dictionary<T1, T2> ToNetDictionary<T1, T2>(PythonValue list)
         {
             Dictionary<T1, T2> result = new Dictionary<T1, T2>();
-            foreach (PythonTuple item in list)
+            foreach (dynamic item in list)
             {
                 result.Add((T1)item[0], (T2)item[1]);
             }
@@ -32,22 +27,22 @@ namespace NltkNet
             return result;
         }
 
-        public static List<T> ToNetList<T>(this IronPython.Runtime.List list)
+        public static List<T> ToNetList<T>(this PythonValue list)
             => list.Cast<T>().ToList(); 
         
-        public static List<T> ToNetList<T>(this PythonGenerator generatorObj, Func<object, T> converter)
+        public static List<T> ToNetList<T>(this PythonValue generatorObj, Func<object, T> converter)
         {
             var result = new List<T>();
-            foreach (T item in generatorObj)
+            foreach (object item in generatorObj)
                 result.Add(converter(item));
             return result;
         }
 
         
-        public static List<Tuple<T1, T2>> ToNetListTuple<T1, T2>(this PythonGenerator generatorObj)
+        public static List<Tuple<T1, T2>> ToNetListTuple<T1, T2>(this PythonValue generatorObj)
         {
             List<Tuple<T1, T2>> result = new List<Tuple<T1, T2>>();
-            foreach (PythonTuple item in generatorObj)
+            foreach (dynamic item in generatorObj)
             {
                 result.Add(new Tuple<T1, T2>((T1)item[0], (T2)item[1]));
             }
@@ -62,14 +57,9 @@ namespace NltkNet
 
         #region from C# to Python extensions
 
-        public static IronPython.Runtime.List ToIronPythonList<T>(this IEnumerable<T> list)
+        public static PythonValue ToPythonList<T>(this IEnumerable<T> list)
         {
-            var result = new IronPython.Runtime.List();
-
-            foreach (var item in list)
-                result.Add(item);
-
-            return result;
+            return BuiltIns.List(list);
         }
 
         #endregion

@@ -329,3 +329,7 @@ ASALocalRun/
 # MFractors (Xamarin productivity tool) working folder 
 .mfractor/
 NltkNet README.docx
+/.artifacts/
+/NltkNet.Runtime.osx-arm64/runtimes/
+/NltkNet.Runtime.win-x64/runtimes/
+/NltkNet.Runtime.linux-x64/runtimes/

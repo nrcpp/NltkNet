@@ -1,131 +1,144 @@
-﻿using IronPython.Hosting;
-using Microsoft.Scripting.Hosting;
+using Python.Runtime;
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Text;
 
 namespace NltkNet
 {
-    public class PythonWrapper
+    public sealed class PythonWrapper : IDisposable
     {
-        private ScriptEngine _engine;
-        private ScriptScope _scope;
-        private ScriptSource _source;
-        private CompiledCode _compiled;
-        private dynamic _pythonClass;
-        private dynamic _defaultModule;
+        private readonly PyModule scope;
+        private PythonValue pythonClass;
+        private string defaultModule;
+        private bool disposed;
 
         public PythonWrapper()
         {
-            _engine = Python.CreateEngine();
-            _scope = _engine.CreateScope();
+            PortableRuntime.Initialize();
+            using (Py.GIL())
+                scope = Py.CreateScope();
         }
 
         public void LoadCodeFromFile(string pyfile, string className = null)
         {
-            string code = File.ReadAllText(pyfile);
-
-            dynamic result = ExecuteScript(code);
+            ExecuteScript(File.ReadAllText(pyfile));
             if (className != null)
-                _pythonClass = _engine.Operations.Invoke(_scope.GetVariable(className));
+                pythonClass = CreateObject(className);
         }
-
 
         public dynamic ExecuteScript(string code)
         {
-            _source = _engine.CreateScriptSourceFromString(code, Microsoft.Scripting.SourceCodeKind.Statements);
-            _compiled = _source.Compile();
+            using (Py.GIL())
+                Scope.Exec(code);
+            return null;
+        }
 
-            dynamic result = _compiled.Execute(_scope);
+        public dynamic Evaluate(string expression)
+        {
+            using (Py.GIL())
+                return PythonValue.FromPython(Scope.Eval(expression));
+        }
 
-            return result;
-        }        
+        private PyModule Scope
+        {
+            get
+            {
+                ObjectDisposedException.ThrowIf(disposed, this);
+                return scope;
+            }
+        }
 
-
-        public void ImportModule(string moduleName) =>
-            _scope.ImportModule(moduleName);
+        public void ImportModule(string moduleName)
+        {
+            using (Py.GIL())
+            using (var module = Py.Import(moduleName))
+                Scope.Set(moduleName, module);
+        }
 
         public void AddLibPaths(List<string> libsPaths)
         {
-            if (libsPaths == null || libsPaths.Count == 0) return;
-
-            ICollection<string> searchPaths = _engine.GetSearchPaths();
-
-            foreach (var path in libsPaths)
+            ArgumentNullException.ThrowIfNull(libsPaths);
+            using (Py.GIL())
+            using (var sys = Py.Import("sys"))
+            using (var path = sys.GetAttr("path"))
             {
-                searchPaths.Add(path);
+                foreach (string directory in libsPaths)
+                {
+                    if (!Directory.Exists(directory))
+                        throw new DirectoryNotFoundException($"Python search directory does not exist: {directory}");
+                    using var entry = new PyString(Path.GetFullPath(directory));
+                    using var ignored = path.InvokeMethod("append", new PyObject[] { entry });
+                }
             }
-
-            _engine.SetSearchPaths(searchPaths);
         }
-
 
         public void SetVariable(string variable, dynamic value)
         {
-            _scope.SetVariable(variable, value);
+            using (Py.GIL())
+            using (var converted = PythonValue.ToPython((object)value))
+                Scope.Set(variable, converted);
         }
 
-        public dynamic CreateObject(string className, params dynamic[] parameters)
-        {
-            return _engine.Operations.Invoke(_scope.GetVariable(className), parameters);
-        }
-
-        public void SetDefaultClass(string className, params dynamic[] arguments)
-        {
-            _pythonClass = CreateObject(className, arguments);
-        }
-
-        public void SetDefaultModule(string moduleName)
-        {
-            _defaultModule = _scope.GetVariable(moduleName);
-        }
+        public dynamic CreateObject(string className, params dynamic[] parameters) => CallFunction(className, parameters);
+        public void SetDefaultClass(string className, params dynamic[] arguments) => pythonClass = CreateObject(className, arguments);
+        public void SetDefaultModule(string moduleName) => defaultModule = moduleName;
 
         public dynamic GetVariable(string variable)
         {
-            return _scope.GetVariable(variable);
+            using (Py.GIL())
+                return PythonValue.FromPython(Scope.Get(variable));
         }
 
-        public T GetVariable<T>(string variable)
-        {
-            return _scope.GetVariable<T>(variable);
-        }
-
-        // aliases
-        public T GetFunction<T>(string funcName) => _scope.GetVariable<T>(funcName);
-        public dynamic GetObject(string objectName) => _scope.GetVariable(objectName);
-        public dynamic GetModule(string moduleName) => _scope.GetVariable(moduleName);
-
+        public T GetVariable<T>(string variable) => (T)GetVariable(variable);
+        public T GetFunction<T>(string funcName) => GetVariable<T>(funcName);
+        public dynamic GetObject(string name) => GetVariable(name);
+        public dynamic GetModule(string name) => GetVariable(name);
 
         public dynamic CallMethod(dynamic pyObject, string method, params dynamic[] parameters)
         {
-            return _engine.Operations.InvokeMember(pyObject, method, parameters);
+            using (Py.GIL())
+            using (var target = PythonValue.ToPython((object)pyObject))
+            using (var callable = target.GetAttr(method))
+                return PythonValue.Invoke(callable, parameters);
         }
 
-        public dynamic CallMethod(string method, params dynamic[] parameters)
+        public dynamic CallMethod(string method, params dynamic[] parameters) => CallMethod(pythonClass, method, parameters);
+
+        public dynamic CallFunction(string funcName, params dynamic[] arguments)
         {
-            return _engine.Operations.InvokeMember(_pythonClass, method, parameters);
+            using (Py.GIL())
+            using (var callable = Scope.Get(funcName))
+                return PythonValue.Invoke(callable, arguments);
         }
 
-        public dynamic CallFunction(string funcName, params dynamic[] parameters)
-        {
-            var func = GetVariable(funcName);
-            return _engine.Operations.Invoke(func, parameters);
-        }
-        
         public dynamic CallModuleFunction(string moduleName, string funcName, params dynamic[] arguments)
         {
-            var module = GetVariable(moduleName);
-            return _engine.Operations.InvokeMember(module, funcName, arguments);
+            using (Py.GIL())
+            using (var module = Py.Import(moduleName))
+            using (var callable = module.GetAttr(funcName))
+                return PythonValue.Invoke(callable, arguments);
         }
-
 
         public dynamic CallModuleFunction(string funcName, params dynamic[] arguments)
-        {            
-            return _engine.Operations.InvokeMember(_defaultModule, funcName, arguments);
+        {
+            if (defaultModule == null)
+                throw new InvalidOperationException("No default Python module has been configured.");
+            return CallModuleFunction(defaultModule, funcName, arguments);
         }
 
-        public T CallModuleFunction<T>(string funcName, params dynamic[] arguments) =>
-            (T)CallModuleFunction(funcName, arguments);
+        public T CallModuleFunction<T>(string funcName, params dynamic[] arguments) => (T)CallModuleFunction(funcName, arguments);
+
+        public void Dispose()
+        {
+            using (Py.GIL())
+            {
+                if (!disposed)
+                {
+                    pythonClass?.Dispose();
+                    scope.Dispose();
+                    disposed = true;
+                }
+            }
+        }
     }
 }

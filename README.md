@@ -1,331 +1,349 @@
-# NltkNet   
-[![Build Status](https://travis-ci.com/nrcpp/NltkNet.svg?branch=master)](https://travis-ci.com/nrcpp/NltkNet)
- ![NltkNet Logo](https://i.ibb.co/phKzWqj/small-icon.png)
+# NltkNet
 
-### C# wrapper for NLTK library ([http://nltk.org](http://nltk.org))
+![NltkNet cover](assets/github-cover.png)
 
-- [Nuget package](https://www.nuget.org/packages/NltkNet/)
+C# wrappers for [NLTK](https://www.nltk.org/) on .NET 10.
 
-## **Frameworks supported**
+## CPython preview (2.0.0-preview.1)
 
-- .NET 4.5 or later, .NET 8
+This branch replaces IronPython with Python.NET and a portable CPython
+distribution. Applications do not need an installed Python interpreter, pip,
+environment variables, or absolute paths.
 
-## **Dependencies**
+Runtime packages are provided for:
 
-- [IronPython](https://www.nuget.org/packages/IronPython) - 2.7.9 or later (Includes [DynamicLanguageRuntime](https://www.nuget.org/packages/DynamicLanguageRuntime/))
-- [System.ValueTuple](https://www.nuget.org/packages/System.ValueTuple) - 4.3.0 
+| NuGet package | Target |
+|---|---|
+| `NltkNet.Runtime.osx-arm64` | macOS ARM64, macOS 14+ |
+| `NltkNet.Runtime.win-x64` | Windows x64, Windows 10/Server 2019+ (subject to .NET 10 requirements) |
+| `NltkNet.Runtime.linux-x64` | Linux x64, glibc 2.28+ and the native dependencies required by .NET 10 |
 
-## **Pre-Requirements**
+Alpine/musl, Windows/Linux ARM64 and macOS x64 are not included. Linux is a
+glibc runtime, not a fully static executable. Windows validation runs in the
+native CI matrix; local cross-packaging alone does not establish support.
+Locally verified: macOS ARM64 and Linux x64 (Ubuntu 24.04 Docker, including an
+offline non-root run). The Windows package has been cross-built and its publish
+assets checked, but a passing Windows CI run is still required before release.
 
-Before start using NltkNet wrapper it is required to download and install latest IronPython binaries from [official site](http://ironpython.net/). You will need IronPython standard libraries for NLTK, as well as installing NLTK library for IronPython. Also IronPython interpreter will be helpful to test python scripts interactively from Visual Studio or command line.
+Components:
 
-It is expectable that most developers already have experience with NLTK library using Python and looking for a way to use in C#. Guides in this section are mostly for a developers who just started learning NLP using NLTK and haven&#39;t much experience with Python.
+- `NltkNet`: .NET API and Python.NET 3.2.1 bridge.
+- `NltkNet.Runtime.osx-arm64`: CPython 3.12.16 (python-build-standalone
+  20261026), NLTK 3.10.4, NumPy 2.5.4 and pinned dependencies.
+- `NltkNet.Runtime.win-x64` and `NltkNet.Runtime.linux-x64`: equivalent
+  environments with native wheels and CPython libraries for each platform.
+- `TestApp`: example application and executable regression checks.
+- `PackageSmokeTest`: consumer of the actual local NuGet packages, not project
+  references. Build it through the verification command below.
 
-### **Installing IronPython**
+## Build and run from source
 
-- [Download](http://ironpython.net/download/) IronPython MSI package (you could also download ZIP archive)
-- Run installer. By default IronPython binaries will be installed to _C:\Program Files \IronPython_ folder. _Tip:_ For your convenience IronPython could be installed to **C:\IronPython27** folder. Further, in examples below we&#39;ll use that path for initialization of path to IronPython and NLTK libs.
-- Add IronPython installation path to PATH environment variable
+On a supported host with the .NET 10 SDK and Bash (Git Bash on Windows):
 
-### **Add IronPython environment to Visual Studio**
-
-- In order to have ability to run IronPython from _within Visual Studio_ you may add IronPython environment to Python Environments there.
-- Use this [documentation](https://docs.microsoft.com/en-us/visualstudio/python/managing-python-environments-in-visual-studio) for details
-
-### **Install NLTK library for IronPython**
-
-There are different ways to install nltk library. If you have experience with using Python and installing packages then everything is clear here.
-
-- _From Visual Studio._ Make sure you&#39;re added IronPython to Python Environments of Visual Studio on the previous step.
-  - Then go to View-&gt;Other Windows-&gt;Python Environments to open existing Python Environments.
-  - Choose IronPython environment and then choose _Packages (PyPi)_ from combobox below
-  - Type there nltk and choose &#39;pip install nltk&#39;
-  - After installing, make sure you have installed nltk folder at &lt;IronPython Path&gt;\Libs\site-packages\nltk
-- _From command line using pip._ Run &#39;pip install nltk==3.4.5&#39; from command line. Path to _Pip.exe_ have to be added to PATH environment variable. If you have several Python environments in system then, make sure you&#39;re installing _nltk_ library to IronPython path.
-- _From binaries._ Download binaries from [https://pypi.org/project/nltk/#files](https://pypi.org/project/nltk/#files). And run installer or unpack archive to &lt;IronPythonPath&gt;\Libs\site-packages\nltk. See [https://www.nltk.org/install.html](https://www.nltk.org/install.html) for more details.
-
-
-### **Install NLTK corpuses**
-
-_Corpus_(plural _corpora_) or _text corpus_ is a large and structured set of texts (nowadays usually electronically stored and processed). In corpus linguistics, they are used to do statistical analysis and hypothesis testing, checking occurrences or validating linguistic rules within a specific language territory.
-
-NLTK library contains lots of ready-to-use corpuses which usually stores as a set of text files. It will be useful to load certain corpus on studying NLP using NLTK library, instead of creating it from scratch.
-
-If you&#39;re using NLTK library for learning NLP, download NLTK _book_ related corpuses and linguistic data.
-
-Use such script either from *Visual Studio Python Interactive Window* or *Iron Python command line* to do so:
-
-```python
-import nltk 
-import nltk.corpus
-nltk.download('book')
+```sh
+bash eng/prepare-runtime.sh
+bash eng/prepare-data.sh
+dotnet run --project TestApp
+dotnet run --project TestApp -- --self-test
 ```
 
-## Getting Started
+Preparation downloads checksum-verified dependencies and development datasets.
+These are explicit build-time actions; neither `Nltk.Init()` nor the packaged
+application downloads or installs anything.
 
-When whole third-party stuff is in-place then we are ready to test NltkNet. Install NltkNet nuget package using your usual way. For example from Package Manager Console by pasting:
+In VS Code, choose **Debug TestApp** and press F5 after preparation.
+The Debug build task copies the runtime and prepared datasets to the output.
+TestApp and PackageSmokeTest select the host runtime automatically.
+For cross-publishing, set `-p:NltkNetRuntimeRid=win-x64` (or `linux-x64`) and
+prepare that runtime first.
 
+The preparation script accepts an explicit target and can cross-build packages:
+
+```sh
+bash eng/prepare-runtime.sh win-x64
+bash eng/prepare-runtime.sh linux-x64
 ```
-Install-Package NltkNet
+
+It uses a checksum-verified portable **host** Python to install hashed wheels
+for the **target**, without executing foreign binaries. CPython, NumPy and
+regex wheels are specific to the target architecture. All dependencies are
+explicitly locked; pip dependency discovery is disabled while cross-building
+to avoid evaluating OS markers against the host. Native builds run `pip check`.
+Run target imports and
+the package-consumer checks on the target OS before release.
+
+## NuGet consumption
+
+The preview packages are generated locally; they have **not** been published
+to nuget.org. Packaging uses the SDK projects.
+Build them into a local feed:
+
+```sh
+dotnet pack NltkNet/NltkNet.csproj -c Release -o .artifacts/feed
+dotnet pack NltkNet.Runtime.osx-arm64/NltkNet.Runtime.osx-arm64.csproj -c Release -o .artifacts/feed
+dotnet pack NltkNet.Runtime.win-x64/NltkNet.Runtime.win-x64.csproj -c Release -o .artifacts/feed
+dotnet pack NltkNet.Runtime.linux-x64/NltkNet.Runtime.linux-x64.csproj -c Release -o .artifacts/feed
 ```
 
-**Use this code to initialize paths to IronPython standard and third-party libraries:**
-```C#
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
+Reference `NltkNet` and the matching `NltkNet.Runtime.<rid>`, both at version
+`2.0.0-preview.1`. Add the local feed alongside nuget.org (needed for Python.NET
+and its dependencies).
+
+```csharp
 using NltkNet;
 
-namespace TestApp
-{
-    class Program
-    {        
-        static void Main(string[] args)
-        {
-            Nltk.Init(new List<string>
-            {
-                @"C:\IronPython27\Lib",                 // Path to IronPython standard libraries
-                @"C:\IronPython27\Lib\site-packages",   // Path to IronPython third-party libraries
-            });           
-        }
-    }
-}
+Nltk.Init();
+using var tokens = Nltk.Tokenize.WordpunctTokenize("Hello, world!");
+Console.WriteLine(string.Join(" | ", tokens.AsNet));
+
+var stemmer = new Nltk.Stem.PorterStemmer();
+Console.WriteLine(stemmer.Stem("programming"));
 ```
 
-**More practical samples**
-```C#
-using System;
-using System.Collections.Generic;
-using System.Dynamic;
-using System.IO;
-using System.Linq;
-using NltkNet;
+Runtime assets flow to normal build and publish outputs via `buildTransitive`.
+The runtime archive is verified against its packaged SHA-256, extracted once
+into the current user's local application-data directory under
+`NltkNet/runtimes/<archive-hash>`, and reused. Extraction uses a cross-process
+lock and atomic directory rename. The cache must be writable and its contents
+must remain private to the application user.
+For managed deployments, `NLTKNET_CACHE_DIRECTORY` can optionally override the
+cache location with an absolute writable path; it is not a Python installation
+path and is not required for normal use.
 
-namespace TestApp
-{
-    class Program
-    {
-        static string text = "This IronPython script works fine when I run it by itself.";
+## Models and corpora
 
-        private static void TestNltkResultClass()
-        {
-            var corpus = new Nltk.Corpus.Inaugural();
+NLTK code and NLTK datasets are separate dependencies. The runtime package
+deliberately does **not** redistribute models or corpora.
 
-            // example of using NltkResult class
-            var fileidsResult = corpus.FileIds();
+`eng/prepare-data.sh` explicitly prepares development data for sentence/word
+tokenization, POS tagging, NER and WordNet lemmatization. TestApp includes it in
+build/publish output. For another application, provision the required datasets
+at deployment time under:
 
-            // Get .NET List<string>
-            List<string> fileidsNet = fileidsResult.AsNet;                          
-            
-            // Get IronPython.Runtime.List
-            IronPython.Runtime.List fileidsPython = fileidsResult.AsPython;         
-            
-            // Cast to Dynamic to access object fields in Python-like style
-            dynamic fileids = fileidsResult;                                        
-
-            // using DynamicObject
-            Console.WriteLine(fileids[0]);
-            Console.WriteLine(fileids.__len__());
-
-            // access sentences (list of list of strings)
-            var sentencesResult = corpus.Sents();
-            dynamic sentences = sentencesResult;
-
-           // Manipulating with Python object: first word in first sentense
-            Console.WriteLine(sentences[0][0]);        
-            List<List<string>> netSentences = sentencesResult.AsNet;
-
-            Console.WriteLine(netSentences[0][0]);              // the same with .NET object
-            Console.WriteLine(netSentences.First().First());     // using LINQ
-        }
-
-        static void TestTokenize()
-        {            
-            var tuples = Nltk.Tokenize.Util.RegexpSpanTokenize(text, "\\s");
-
-            var list = Nltk.Tokenize.SentTokenize(text).AsNet;            
-            foreach (var item in list)
-                Console.Write(item + ", ");
-        }
-
-        static void TestProbability()
-        {
-            var words = Nltk.Tokenize.WordTokenize(text);
-            var fd = new Nltk.Probability.FreqDist(words.AsPython);
-
-            var result = fd.MostCommon(null).AsNet;
-            foreach (var item in result)
-                Console.WriteLine(item.Key + ": " + item.Value);
-        }
-
-        static void TestStem()
-        {
-            var stemmer = new Nltk.Stem.PorterStemmer();
-            var words = new List<string>() { "program", "programs", "programmer", "programming", "programmers" };
-            var stem = stemmer.Stem("girls");
-
-            Console.WriteLine("Stem: " +stem);
-
-            var lemmatizer = new Nltk.Stem.WordNetLemmatizer();
-            Console.WriteLine("Lemmatize: " + lemmatizer.Lemmatize("best"));
-        }
-
-
-        private static void TestCorpus()
-        {
-            // NOTE: brown corpus have to be installed. By default to %appdata%\nltk_data\corpora\brown
-            // See https://github.com/nrcpp/NltkNet/blob/master/NltkNet/Nltk/Nltk.Corpus.cs for more corpora
-            var corpus = new Nltk.Corpus.Brown();
-            
-            var fileidsResult = corpus.FileIds();
-            List<string> fileidsNet = fileidsResult.AsNet;
-            dynamic fileids = fileidsResult;
-
-            Console.WriteLine(fileids[0]);
-
-            var words = corpus.Words(fileidsNet.First());
-            var sentences = corpus.Sents(fileidsNet.First());
-            var paragraphs = corpus.Paras(fileidsNet.First());
-            string text = corpus.Raw(fileidsNet.First());
-            var taggedWords = corpus.TaggedWords(fileidsNet.First());
-
-            var stopWordsCorpus = new Nltk.Corpus.StopWords();
-            var stopWords = stopWordsCorpus.Words(null);
-
-            // Process given 
-            Console.WriteLine("Stopwords: \r\n" + string.Join(", ", stopWords));
-            Console.WriteLine("Words from Brown corpus: \r\n" + string.Join(", ", words));
-        }
-
-        
-        static void Main(string[] args)
-        {
-            Nltk.Init(new List<string>
-            {
-                @"C:\IronPython27\Lib",
-                @"C:\IronPython27\Lib\site-packages",
-            });
-
-            TestNltkResultClass();
-            TestCorpus();
-            TestTokenize();
-            TestProbability();
-            TestStem();
-        }
-    }
-}
-
+```text
+<application directory>/nltknet/data/
+  tokenizers/punkt_tab/
+  taggers/averaged_perceptron_tagger_eng/
+  chunkers/maxent_ne_chunker_tab/
+  corpora/words/
+  corpora/wordnet/
 ```
 
-## What if there is no required NLTK feature in wrapper?
+NltkNet sets `nltk.data.path` to this application-local directory, not the
+machine's Python/NLTK directories. Keep dataset files non-writable by other
+accounts (`chmod -R go-w <dataset-directory>`); current NLTK enforces this.
+Missing resources raise the original NLTK error rather than triggering a
+download.
 
-**NltkNet** wrapper may be considered as a starting point for learning NLP using C# and Visual Studio. Current version of NltkNet does not cover lots of features of original NLTK library written in Python. You may use workarounds to execute Python code that didn't wrapped yet.
-First is direct access to **Nltk.Py** property which provides you ability to execute any IronPython script, including wrappers arround method calls and creating objects. Consider the below example that illustrates possibility of using `unwrapped` features of NLTK:
-```C#
-using NltkNet;
-using System;
-using System.Collections.Generic;
-namespace TestApp
-{
-    class Workarounds
-    {
-        public static void TestPurePython()
-        {
-            // Initialization required
-            Nltk.Init(new List<string>
-            {
-                @"C:\IronPython27\Lib",
-                @"C:\IronPython27\Lib\site-packages",
-            });
+Review each model/corpus license before redistributing it. In particular,
+the upstream NER model metadata does not specify a redistribution license.
+A public dataset NuGet package is deferred until that review is complete.
+Corpus APIs may require additional datasets not prepared by the script.
 
+## Migration from IronPython
 
-            // Imports NLTK corpus module
-            Nltk.Py.ImportModule("nltk.corpus");
+- Replace `Nltk.Init(paths)` with `Nltk.Init()`. Repeated calls are idempotent.
+  The obsolete path overload rejects external interpreter paths explicitly.
+- `AsNet` retains the high-level .NET result shapes. Python object results
+  now use `PythonValue` rather than `IronPython.Runtime.List`/`PythonTuple`.
+- `PythonValue` supports dynamic attributes, method calls, indexing, invocation
+  and enumeration; these operations acquire the GIL internally. Python
+  scalars become .NET scalars. Managed dictionaries, tuples and sequences are
+  converted to native Python containers.
+- Results and `PythonValue` implement `IDisposable`. Dispose owned results
+  when finished; do not use their Python values afterwards.
+- `PythonWrapper.ExecuteScript` executes statements and returns no value;
+  use `Evaluate` for expressions. Python snippets must use Python 3 syntax.
+- Custom modules can be added explicitly with `Nltk.Py.AddLibPaths(...)`.
+  This is not required for the packaged interpreter or NLTK.
+- Named dynamic arguments are not supported in this preview; use Python
+  expressions for keyword calls.
+- CPython is process-global. NltkNet owns its initialization and keeps it alive
+  for the process lifetime; shutdown/reinitialization and sharing an interpreter
+  initialized by another library are not supported. Do not dispose `Nltk.Py`.
+  Separate `PythonWrapper` scopes can be disposed.
+- There is no Windows platform spoofing or system IronPython DLL resolver.
 
-            // Import 'names' object to access corpus content
-            Nltk.Py.ExecuteScript("from nltk.corpus import names");
+These are breaking changes and are versioned as a new major-version preview.
 
-            // Get object by name
-            dynamic namesObj = Nltk.Py.GetObject("names");
+## Package verification
 
-            // Call object's method 'names.words()'
-            dynamic namesList = Nltk.Py.CallMethod(namesObj, "words");
-            
-            foreach (var name in namesList)
-                Console.Write(name + ", ");
-        }
-    }
-}
+After both preparation scripts:
+
+```sh
+bash eng/verify-packages.sh
 ```
 
+The script packs both projects, restores a separate consumer into an isolated
+NuGet cache, publishes it to a path containing spaces and Unicode, and runs it
+from an unrelated working directory. It checks automatic runtime discovery,
+invalid external Python paths, no-data diagnostics, corruption/missing-runtime
+diagnostics, model-backed operations, and offline execution using macOS
+`sandbox-exec` network denial on macOS. On Windows/Linux the script explicitly
+reports that network denial is not applied; Linux offline validation can run
+the published consumer in Docker with `--network none`. Two processes also
+initialize concurrently against a fresh isolated cache.
 
+The GitHub Actions runtime-packages workflow runs native preparation, source
+regressions and real NuGet consumption on macOS ARM64, Windows x64 and Linux
+x64. It uploads tested packages without publishing them to nuget.org.
 
-### Other examples that uses IronPython [built-in functions](https://ironpython-test.readthedocs.io/en/latest/library/functions.html):
+The shared regression checks exercise tokenization, stemming, lemmatization,
+POS, NER, generators, tuples, dictionaries, corpora, classification, exceptions,
+repeated initialization, garbage collection and calls from multiple threads.
 
-```C#
-using NltkNet;
+Only ordinary framework-dependent build/publish is supported in this preview.
+Single-file, trimming, Native AOT, other RIDs, automatic upgrades and public
+NuGet publication are not claimed. Review all bundled component licenses and
+OS support before a public release; notices and upstream license files are
+included in the runtime package/archive.
 
-namespace TestApp
-{
-    using System;
-    using System.Collections.Generic;
+## Runtime licenses
 
-    // Using NltkNet.BuiltIn static class to access Print, Str, Len, List, Sorted, Import and other IronPython built-in functions.
-    // See https://ironpython-test.readthedocs.io/en/latest/library/functions.html for details
-    using static NltkNet.BuiltIns;
+`eng/prepare-runtime.sh` also downloads the matching **full** CPython build,
+verifies its pinned SHA-256, and preserves its `PYTHON.json`, license texts and
+archive provenance. This requires zstd-capable tar: macOS and Windows system
+bsdtar support it; GNU tar on Linux requires the `zstd` executable.
+No component is relicensed. Linux intentionally excludes the `_dbm` extension
+that statically embeds Berkeley DB; the original metadata is preserved and the
+removal is recorded in `runtime-modifications.json`.
 
-    static class TestBuiltIn
-    {        
-        public static void OverallTest()
-        {
-            Nltk.Init(new List<string>()
-            {
-                @"C:\IronPython27\Lib",
-                @"C:\IronPython27\Lib\site-packages",
-            });
+### Linux runtime variant
 
-            TestImport();
-            TestStandard();
-        }
+Before preparing a Linux runtime (including cross-packaging from macOS):
 
-
-        // Using '__import__' built-in to import 'nltk.corpus.brown' and 'nltk.corpus.wordnet'
-        public static void TestImport()
-        {            
-            dynamic corpuses = ImportNames("nltk.corpus", "brown", "wordnet");
-            dynamic brown = corpuses.brown;
-            dynamic wordnet = corpuses.wordnet;
-
-            Print(brown.words(brown.fileids()[0]));
-        }
-
-        // Test standard python 2.7 functions (camel-case): Len,Str,List,Sorted,Range,Zip etc.
-        public static void TestStandard()
-        {
-            var lst1 = new List<int> { 5, 4, 3, 2, 1, 5, 4, 3, 2, 1 };
-            var lst2 = new List<int> { 10, 20, 30, 40, 50 };
-            var lst3 = new List<string>() { "A", "B", "C", "D" };
-
-            Print("Len: " + Len(lst1));
-            Print("Sorted: " + Str(Sorted(lst1)));
-            var tuple = (1, 2, "str");
-
-            Print("Tuple2List: " + tuple);
-            Print(List(tuple));
-            
-            Print("Set: " + Str(Set(lst1)));
-            var range = Range(0, 30, 3);
-            Print("Range: " + Str(List(range)));
-
-            Print("Zip: " + Str(Zip(lst1, lst2)));
-
-            Print(Globals());
-            Console.ReadLine();            
-        }
-    }
-}
+```sh
+bash eng/build-linux-numpy.sh
+bash eng/prepare-runtime.sh linux-x64
 ```
 
+The first command requires Docker and builds the pinned NumPy source in an
+immutable manylinux/glibc 2.28 x64 image with hash-locked build dependencies.
+It disables external BLAS/LAPACK and uses NumPy's internal implementations.
+The repaired wheel is hash-locked locally; runtime preparation installs it
+with `--no-index`, never replacing it with PyPI's Fortran-enabled wheel.
+Source URL/hash, build options, builder digest and wheel hash are included in
+`numpy-build-provenance.json`. Build tools are not runtime prerequisites.
 
+This variant does not ship Berkeley DB, libgfortran, libquadmath or OpenBLAS.
+`dbm`/`shelve` still work through another available backend (including `dbm.dumb`),
+but Berkeley DB files cannot be opened through the removed `_dbm` module.
+NumPy's CPU baseline is retained without extra dispatch variants. Matrix-heavy
+workloads may be slower; tokenization, tagging and NER retain their APIs.
+Preparation on Linux audits ELF dependencies and tests dot/solve/SVD and
+dbm/shelve fallback. CI and the shared .NET regressions cover the same numerical
+operations and the absence of `_dbm`.
 
+### Windows redistribution
+
+The self-contained Windows runtime is retained; no separate VC++ installer is
+required by this packaging change. The three Microsoft runtime DLLs are
+inventoried by version and hash. Preparation downloads the official VS 2022
+Community terms with a pinned SHA-256, preserves their text, and includes
+`microsoft/REDISTRIBUTION.txt` and `microsoft-redistribution.json` in `licenses/`.
+The Windows NuGet requests license acceptance.
+
+The Community terms provide individual and OSI-open-source development routes
+that may be available without a paid Visual Studio subscription. However, the
+publisher must actually hold an applicable license and comply with section 4,
+including REDIST eligibility and downstream protective-terms requirements.
+Neither a CI runner, a copied EULA nor the NuGet acceptance flag establishes
+those facts. See [the Windows review](eng/WINDOWS-REDISTRIBUTION.txt) and confirm
+entitlement/recipient terms before public distribution. This is the remaining
+Windows licensing gate, not a requirement to install Python or specify a path.
+
+Every runtime NuGet includes `licenses/` with:
+
+- `LICENSE.txt`: consolidated original license/notice texts, used by NuGet's
+  file-based license metadata. NltkNet's MIT license does not replace these terms.
+- `inventory.json`: Python distribution versions/declarations, per-extension
+  CPython link/license metadata, original notice hashes and actual native file hashes.
+- `CPython-PYTHON.json`, `CPython-provenance.json` and `wheel-install-report.json`:
+  upstream metadata and exact archive/wheel download URLs and hashes.
+- `cpython/` and `python-packages/`: original notices, including NumPy's native
+  library terms and pip's vendored dependency notices.
+- `PUBLISHING-REVIEW.txt`: source-form availability and unresolved obligations.
+
+An identical copy is embedded in `python.tar.gz`, so notices remain available
+when the runtime is copied to an application and extracted. NLTK models/corpora
+are not included. Unmodified tqdm and pip vendored Python sources remain in
+site-packages, with their original licenses.
+
+With Python 3.12+ available on the build/verification machine:
+
+```sh
+python3 -m unittest discover -s eng -p test_licenses.py -v
+python3 eng/verify_licenses.py .artifacts/feed/NltkNet.Runtime.*.nupkg
+```
+
+Verification checks license metadata, full-text inclusion, original hashes,
+embedded copies and the native binary inventory. Native CI runs these checks.
+`--require-publishable` additionally rejects unresolved obligations or missing
+legal clearance; it intentionally fails for the current previews.
+
+**Collection is not legal clearance.** The Linux variant removes the previous
+Berkeley DB and libquadmath blockers rather than declaring their terms
+satisfied. Upstream license files retained for reference may still describe
+excluded components; the active inventory and runtime modification record
+identify what is shipped. Windows entitlement/recipient terms remain subject
+to publisher confirmation. Linux and macOS have no platform-specific blocker
+detected by these checks, but that is not an assertion of legal clearance.
+
+## Publishing checklist
+
+### Keyless publishing setup
+
+`.github/workflows/publish.yml` selects four packages from a successful native
+CI run and checks their IDs, versions, source commit and runtime licenses.
+It preserves those binaries without rebuilding and records SHA-256 hashes.
+Push-triggered runs only validate/package the candidate; they never publish.
+The first candidate is CI run `40919248826`, version `2.0.0-preview.1`.
+
+In nuget.org, signed in as the package owner, create a Trusted Publishing
+policy with:
+
+- Repository owner: `nrcpp`; repository: `NltkNet`.
+- Workflow filename: `publish.yml` (without directory).
+- Environment: `nuget`; policy owner: `skeleton`.
+- Scopes: new packages and new versions; package pattern `NltkNet*`.
+  This is needed for the three new runtime package IDs as well as `NltkNet`.
+
+Configure the GitHub `nuget` environment with a required reviewer and restricted
+deployment branches. Merge the reviewed workflow into the default branch
+before using its manual Run workflow button. First dispatch with `publish`
+disabled. After reviewing the selected artifacts, dispatch with both `publish`
+and `redistribution_confirmed` enabled and approve the environment deployment.
+The latter is an explicit per-release publisher confirmation, not automated
+legal clearance. No persistent API key is needed; only the publish job can
+request a short-lived OIDC credential. Never send credentials in chat.
+
+The current packages are local previews, not release-ready cross-platform
+distributions. Before uploading:
+
+1. Verify ownership of the library and runtime package IDs on nuget.org, choose
+   an unused version, and confirm the published platform scope against passing
+   native CI results.
+2. Resolve the obligations recorded in each runtime's `PUBLISHING-REVIEW.txt`
+   and `inventory.json`, review original texts and corresponding-source
+   availability, and retain evidence of clearance. The consolidated license
+   document and automated inventory are not legal approval. Keep models/corpora
+   separate until their redistribution terms are established.
+3. Validate pinned dependency versions, vulnerabilities and supported OS
+   versions. Repeat package verification from a clean checkout and on the
+   minimum supported OS versions. This is a new major-version API migration.
+4. Require passing native CI for runtime preparation, build, regression checks
+   and actual NuGet consumer verification. Preserve tested artifacts for release;
+   do not rebuild them between validation and upload.
+5. Commit reviewed source, tag the release and ensure package README/metadata
+   match the released version and platform scope. Replace local-feed-only
+   instructions when packages become public.
+6. Configure a narrowly scoped nuget.org API key in CI secrets, or supported
+   trusted publishing. Never put credentials in the repository or chat.
+7. Upload the reviewed runtime and library packages, wait for indexing, then
+   verify installation and execution from nuget.org in a clean consumer.
+   Published package versions cannot be overwritten.
+
+The icon is cropped from the supplied cover and embedded in both packages as
+`icon.png`. NuGet metadata includes authors, project/repository URLs and tags.
+The cover is displayed here; GitHub's social-preview image must be uploaded
+separately in the repository settings.

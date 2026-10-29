@@ -1,32 +1,31 @@
-﻿using IronPython.Runtime;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Dynamic;
 using System.Linq;
-using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace NltkNet
 {
     public static partial class Nltk
     {                
-        public class NltkResult<NetType, PythonType> : DynamicObject                   
+        public class NltkResult<NetType, PythonType> : DynamicObject, IDisposable
         {
             private NetType _asNet;
+            private bool converted;
 
             public NetType AsNet
             {
                 get
                 {
-                    // Lazy pattern
-                    if (_asNet == null && ToNetConverter != null)
+                    if (!converted && ToNetConverter != null)
+                    {
                         _asNet = ToNetConverter(AsPython);
+                        converted = true;
+                    }
 
                     return _asNet;
                 }
 
-                set => _asNet = value;
+                set { _asNet = value; converted = true; }
             }
 
             public PythonType AsPython { get; set; }
@@ -52,11 +51,18 @@ namespace NltkNet
 
             #region DynamicObject overrides
 
+            private PythonValue PythonObject => AsPython as PythonValue
+                ?? throw new InvalidOperationException("This result does not contain a Python object.");
+
+            public void Dispose()
+            {
+                if (AsPython is IDisposable value)
+                    value.Dispose();
+            }
+
             public override bool TryInvokeMember(InvokeMemberBinder binder, object[] args, out object result)
             {
-                MethodInfo method = AsPython.GetType().GetMethod(binder.Name);
-                result = method.Invoke(AsPython, args);
-                return true;
+                return PythonObject.TryInvokeMember(binder, args, out result);
             }
 
 
@@ -64,26 +70,22 @@ namespace NltkNet
             // https://stackoverflow.com/questions/2783502/c-sharp-using-the-dynamic-keyword-to-access-properties-via-strings-without-refle
             public override bool TryGetIndex(GetIndexBinder binder, object[] indexes, out object result)
             {
-                result = AsDynamic[indexes[0]];
-                return true;
+                return PythonObject.TryGetIndex(binder, indexes, out result);
             }
 
             public override bool TrySetIndex(SetIndexBinder binder, object[] indexes, object value)
             {
-                AsDynamic[indexes[0]] = value;
-                return true;
+                return PythonObject.TrySetIndex(binder, indexes, value);
             }
 
             public override bool TryGetMember(GetMemberBinder binder, out object result)
             {
-                result = AsPython.GetType().GetProperty(binder.Name).GetValue(AsPython);
-                return true;
+                return PythonObject.TryGetMember(binder, out result);
             }
 
             public override bool TrySetMember(SetMemberBinder binder, object value)
             {
-                AsPython.GetType().GetProperty(binder.Name).SetValue(AsPython, value);
-                return true;
+                return PythonObject.TrySetMember(binder, value);
             }
 
             #endregion
@@ -98,9 +100,9 @@ namespace NltkNet
             public override Func<dynamic, (string, string)> ToNetConverter => tuple => ValueTuple.Create((string)tuple[0], (string)tuple[1]);
         }
 
-        public class NltkResultListString : NltkResult<List<string>, IronPython.Runtime.List>
+        public class NltkResultListString : NltkResult<List<string>, PythonValue>
         {
-            public override Func<IronPython.Runtime.List, List<string>> ToNetConverter => list => list.Cast<string>().ToList();
+            public override Func<PythonValue, List<string>> ToNetConverter => list => list.Cast<string>().ToList();
         }
 
         public class NltkResultListStringDynamic : NltkResult<List<string>, dynamic>

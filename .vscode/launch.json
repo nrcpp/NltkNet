@@ -1,0 +1,16 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Debug TestApp",
+      "type": "coreclr",
+      "request": "launch",
+      "preLaunchTask": "build TestApp",
+      "program": "${workspaceFolder}/TestApp/bin/Debug/net10.0/TestApp.dll",
+      "args": [],
+      "cwd": "${workspaceFolder}/TestApp",
+      "console": "integratedTerminal",
+      "stopAtEntry": false
+    }
+  ]
+}
