@@ -2,7 +2,7 @@ name: Runtime packages
 
 on:
   push:
-  pull_request:
+    branches: [master]
   workflow_dispatch:
 
 permissions:
