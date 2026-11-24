@@ -260,7 +260,8 @@ initialize concurrently against a fresh isolated cache.
 
 The GitHub Actions runtime-packages workflow runs native preparation, source
 regressions and real NuGet consumption on macOS ARM64, Windows x64 and Linux
-x64. It uploads tested packages without publishing them to nuget.org.
+x64. It runs on pushes to `master` and manually, and uploads tested packages
+(kept 7 days) without publishing them to nuget.org.
 
 The shared regression checks exercise tokenization, stemming, lemmatization,
 POS, NER, generators, tuples, dictionaries, corpora, classification, exceptions,
@@ -363,6 +364,17 @@ excluded components; the active inventory and runtime modification record
 identify what is shipped. Windows entitlement/recipient terms remain subject
 to publisher confirmation. Linux and macOS have no platform-specific blocker
 detected by these checks, but that is not an assertion of legal clearance.
+
+## Branches and CI
+
+- `dev` is the default branch. All development, including changes made by
+  coding agents, is committed and merged into `dev`.
+- `master` is the release branch. Only a push to `master` runs native CI
+  (`runtime-packages.yml`); pushes to `dev` and pull requests start no runs.
+  Merge `dev` into `master` only when the maintainer asks for a release.
+- Publishing to nuget.org is manual only (`publish.yml`) and accepts native CI
+  runs from `master`. CI artifacts are kept 7 days, so publish within a week of
+  the CI run or run it again.
 
 ## Publishing checklist
 
